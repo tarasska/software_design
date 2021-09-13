@@ -1,6 +1,6 @@
 public interface DoublyLinkedList<T> {
-    void addFirst(T value);
-    T removeLast();
+    LinkedNode<T> addFirst(T value);
+    LinkedNode<T> removeLast();
     boolean remove(T value);
     int size();
 }

@@ -1,8 +1,9 @@
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class SequentialList<T> implements DoublyLinkedList<T> {
-    private static class Node<E> {
+    private static class Node<E> implements LinkedNode<E> {
         private final E value;
 
         private Node<E> prev;
@@ -19,13 +20,28 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
             this.prev = prev;
             this.next = next;
         }
+
+        @Override
+        public LinkedNode<E> getNext() {
+            return next;
+        }
+
+        @Override
+        public LinkedNode<E> getPrev() {
+            return prev;
+        }
+
+        @Override
+        public E getValue() {
+            return value;
+        }
     }
 
     private int size = 0;
     private final Node<T> head = new Node<>();
 
     @Override
-    public void addFirst(T value) {
+    public LinkedNode<T> addFirst(T value) {
         Node<T> newNode = new Node<>(value, head.prev, head);
 
         assert head.prev != null && head.prev.next != null
@@ -34,10 +50,11 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         head.prev = newNode;
 
         size++;
+        return newNode;
     }
 
     @Override
-    public T removeLast() {
+    public LinkedNode<T> removeLast() {
         if (size == 0) {
             throw new NoSuchElementException("List is empty");
         }
@@ -49,7 +66,7 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         head.next = last.next;
 
         size--;
-        return last.value;
+        return last;
     }
 
     @Override
