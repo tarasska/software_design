@@ -41,12 +41,12 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         if (size == 0) {
             throw new NoSuchElementException("List is empty");
         }
-        Node<T> last = head.prev;
+        Node<T> last = head.next;
 
         assert last.next != null && last.next.prev != null
             : "There are no null pointers in the cyclic list";
         last.next.prev = head;
-        head.prev = last.next;
+        head.next = last.next;
 
         size--;
         return last.value;
@@ -70,5 +70,10 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
             curNode = curNode.next;
         }
         return false;
+    }
+
+    @Override
+    public int size() {
+        return size;
     }
 }
