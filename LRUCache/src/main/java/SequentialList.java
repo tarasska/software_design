@@ -1,4 +1,3 @@
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -6,8 +5,8 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
     private static class Node<E> implements LinkedNode<E> {
         private final E value;
 
-        private Node<E> prev;
-        private Node<E> next;
+        private LinkedNode<E> prev;
+        private LinkedNode<E> next;
 
         Node() {
             this.value = null;
@@ -15,7 +14,7 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
             this.prev = this;
         }
 
-        Node(E value, Node<E> prev, Node<E> next) {
+        Node(E value, LinkedNode<E> prev, LinkedNode<E> next) {
             this.value = value;
             this.prev = prev;
             this.next = next;
@@ -32,6 +31,16 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         }
 
         @Override
+        public void setNext(LinkedNode<E> next) {
+            this.next = next;
+        }
+
+        @Override
+        public void setPrev(LinkedNode<E> prev) {
+            this.prev = prev;
+        }
+
+        @Override
         public E getValue() {
             return value;
         }
@@ -42,12 +51,12 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
 
     @Override
     public LinkedNode<T> addFirst(T value) {
-        Node<T> newNode = new Node<>(value, head.prev, head);
+        Node<T> newNode = new Node<T>(value, head.prev, head);
 
-        assert head.prev != null && head.prev.next != null
+        assert head.prev != null && head.prev.getNext() != null
                 : "There are no null pointers in the cyclic list";
-        head.prev.next = newNode;
-        head.prev = newNode;
+        head.getPrev().setNext(newNode);
+        head.setPrev(newNode);
 
         size++;
         return newNode;
@@ -58,12 +67,12 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         if (size == 0) {
             throw new NoSuchElementException("List is empty");
         }
-        Node<T> last = head.next;
+        LinkedNode<T> last = head.getNext();
 
-        assert last.next != null && last.next.prev != null
+        assert last.getNext() != null && last.getNext().getPrev() != null
             : "There are no null pointers in the cyclic list";
-        last.next.prev = head;
-        head.next = last.next;
+        last.getNext().setPrev(head);
+        head.setNext(last.getNext());
 
         size--;
         return last;
@@ -71,22 +80,32 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
 
     @Override
     public boolean remove(T value) {
-        Node<T> curNode = head.next;
+        LinkedNode<T> curNode = head.getNext();
 
         while (curNode != head) {
             assert curNode != null : "There are no null pointers in the cyclic list";
-            if (Objects.equals(value, curNode.value)) {
-                assert curNode.prev != null && curNode.prev.next != null
+            if (Objects.equals(value, curNode.getValue())) {
+                assert curNode.getPrev() != null && curNode.getPrev().getNext() != null
                     : "There are no null pointers in the cyclic list";
-                curNode.prev.next = curNode.next;
-                curNode.next.prev = curNode.prev;
+                curNode.getPrev().setNext(curNode.getNext());
+                curNode.getNext().setPrev(curNode.getPrev());
 
                 size--;
                 return true;
             }
-            curNode = curNode.next;
+            curNode = curNode.getNext();
         }
         return false;
+    }
+
+    @Override
+    public void remove(LinkedNode<T> node) {
+        Objects.requireNonNull(node);
+        Objects.requireNonNull(node.getNext());
+        Objects.requireNonNull(node.getPrev());
+
+        node.getPrev().setNext(node.getNext());
+        node.getNext().setPrev(node.getPrev());
     }
 
     @Override
