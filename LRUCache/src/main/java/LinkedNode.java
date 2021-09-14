@@ -1,4 +1,4 @@
-public interface LinkedNode<T> {
+interface LinkedNode<T> {
     LinkedNode<T> getNext();
     LinkedNode<T> getPrev();
     void setNext(LinkedNode<T> next);

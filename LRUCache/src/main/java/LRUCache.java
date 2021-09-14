@@ -15,7 +15,17 @@ public class LRUCache<K, V> implements Cache<K, V> {
     @Override
     public V get(K key) {
         LinkedNode<Map.Entry<K, V>> holder = cache.get(key);
-        return holder == null ? null : holder.getValue().getValue();
+        if (holder != null) {
+            V value = holder.getValue().getValue();
+            orderedValues.remove(holder);
+            cache.put(key, orderedValues.addFirst(new AbstractMap.SimpleEntry<>(key, value)));
+
+            assert cache.size() == orderedValues.size()
+                : "Map and list must contain the same number of items";
+            
+            return value;
+        }
+        return null;
     }
 
     @Override
@@ -26,5 +36,8 @@ public class LRUCache<K, V> implements Cache<K, V> {
             cache.remove(orderedValues.removeLast().getValue().getKey());
         }
         cache.put(key, orderedValues.addFirst(new AbstractMap.SimpleEntry<>(key, value)));
+
+        assert cache.size() == orderedValues.size()
+            : "Map and list must contain the same number of items";
     }
 }
