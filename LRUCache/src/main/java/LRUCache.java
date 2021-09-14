@@ -12,6 +12,11 @@ public class LRUCache<K, V> implements Cache<K, V> {
         this.capacity = capacity;
     }
 
+    private void assertSizeEqual() {
+        assert cache.size() == orderedValues.size()
+            : "Map and list must contain the same number of items";
+    }
+
     @Override
     public V get(K key) {
         LinkedNode<Map.Entry<K, V>> holder = cache.get(key);
@@ -20,9 +25,8 @@ public class LRUCache<K, V> implements Cache<K, V> {
             orderedValues.remove(holder);
             cache.put(key, orderedValues.addFirst(new AbstractMap.SimpleEntry<>(key, value)));
 
-            assert cache.size() == orderedValues.size()
-                : "Map and list must contain the same number of items";
-            
+            assertSizeEqual();
+
             return value;
         }
         return null;
@@ -37,7 +41,12 @@ public class LRUCache<K, V> implements Cache<K, V> {
         }
         cache.put(key, orderedValues.addFirst(new AbstractMap.SimpleEntry<>(key, value)));
 
-        assert cache.size() == orderedValues.size()
-            : "Map and list must contain the same number of items";
+        assertSizeEqual();
+    }
+
+    @Override
+    public int size() {
+        assertSizeEqual();
+        return cache.size();
     }
 }
