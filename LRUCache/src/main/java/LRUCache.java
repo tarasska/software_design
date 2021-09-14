@@ -9,6 +9,9 @@ public class LRUCache<K, V> implements Cache<K, V> {
     private final int capacity;
 
     public LRUCache(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be non-negative.");
+        }
         this.capacity = capacity;
     }
 
@@ -34,6 +37,10 @@ public class LRUCache<K, V> implements Cache<K, V> {
 
     @Override
     public void put(K key, V value) {
+        if (capacity == 0) {
+            return;
+        }
+
         if (cache.containsKey(key)) {
             orderedValues.remove(cache.get(key));
         } else if (cache.size() == capacity) {
