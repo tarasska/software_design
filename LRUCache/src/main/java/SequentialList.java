@@ -83,6 +83,8 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         last.getNext().setPrev(head);
         head.setNext(last.getNext());
 
+        assertBelongsToCycle(head);
+
         size--;
         return last;
     }
@@ -115,7 +117,10 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         node.getPrev().setNext(node.getNext());
         node.getNext().setPrev(node.getPrev());
 
-        assertBelongsToCycle(node);
+        size--;
+
+        assertBelongsToCycle(node.getNext());
+        assertBelongsToCycle(node.getPrev());
     }
 
     @Override
