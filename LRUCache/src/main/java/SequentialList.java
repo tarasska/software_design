@@ -49,14 +49,23 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
     private int size = 0;
     private final Node<T> head = new Node<>();
 
+    private void assertBelongsToCycle(LinkedNode<T> node) {
+        assert node != null : "Node must exist";
+        assert node.getNext() != null && node.getPrev() != null &&
+            node.getNext().getPrev() == node && node.getPrev().getNext() == node
+            : "The node must belongs to the cycle list";
+    }
+
     @Override
     public LinkedNode<T> addFirst(T value) {
-        Node<T> newNode = new Node<T>(value, head.prev, head);
+        Node<T> newNode = new Node<>(value, head.prev, head);
 
-        assert head.prev != null && head.prev.getNext() != null
-                : "There are no null pointers in the cyclic list";
+        assertBelongsToCycle(head);
+
         head.getPrev().setNext(newNode);
         head.setPrev(newNode);
+
+        assertBelongsToCycle(newNode);
 
         size++;
         return newNode;
@@ -69,8 +78,8 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         }
         LinkedNode<T> last = head.getNext();
 
-        assert last.getNext() != null && last.getNext().getPrev() != null
-            : "There are no null pointers in the cyclic list";
+        assertBelongsToCycle(last);
+
         last.getNext().setPrev(head);
         head.setNext(last.getNext());
 
@@ -83,12 +92,13 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         LinkedNode<T> curNode = head.getNext();
 
         while (curNode != head) {
-            assert curNode != null : "There are no null pointers in the cyclic list";
+            assertBelongsToCycle(curNode);
             if (Objects.equals(value, curNode.getValue())) {
-                assert curNode.getPrev() != null && curNode.getPrev().getNext() != null
-                    : "There are no null pointers in the cyclic list";
                 curNode.getPrev().setNext(curNode.getNext());
                 curNode.getNext().setPrev(curNode.getPrev());
+
+                assertBelongsToCycle(curNode.getNext());
+                assertBelongsToCycle(curNode.getPrev());
 
                 size--;
                 return true;
@@ -100,16 +110,17 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
 
     @Override
     public void remove(LinkedNode<T> node) {
-        Objects.requireNonNull(node);
-        Objects.requireNonNull(node.getNext());
-        Objects.requireNonNull(node.getPrev());
+        assertBelongsToCycle(node);
 
         node.getPrev().setNext(node.getNext());
         node.getNext().setPrev(node.getPrev());
+
+        assertBelongsToCycle(node);
     }
 
     @Override
     public int size() {
+        assert size >= 0 : "Size must be non-negative.";
         return size;
     }
 }
