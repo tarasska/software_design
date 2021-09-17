@@ -66,6 +66,7 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         head.setPrev(newNode);
 
         assertBelongsToCycle(newNode);
+        assert head.getPrev() == newNode : "The head should reference a new node.";
 
         size++;
         return newNode;
@@ -84,11 +85,13 @@ public class SequentialList<T> implements DoublyLinkedList<T> {
         head.setNext(last.getNext());
 
         assertBelongsToCycle(head);
+        assert head.getNext() != last : "The head mustn't reference the deleted node.";
 
         size--;
         return last;
     }
 
+    // Added, but not used in Cache
     @Override
     public boolean remove(T value) {
         LinkedNode<T> curNode = head.getNext();
