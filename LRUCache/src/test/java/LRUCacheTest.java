@@ -141,4 +141,29 @@ public class LRUCacheTest {
             }
         }
     }
+
+    @Test
+    public void getNonExistentElements() {
+        final int capacity = 100;
+        Cache<Integer, String> cache = new LRUCache<>(capacity);
+        for (int i = 0; i < capacity; i++) {
+            cache.put(i, testStrById(i));
+        }
+
+        for (int i = capacity; i < 2 * capacity; i++) {
+            Assert.assertNull(cache.get(i));
+        }
+        Assert.assertEquals(capacity, cache.size());
+
+        for (int i = 0; i < capacity; i++) {
+            Assert.assertEquals(testStrById(i), cache.get(i));
+        }
+
+        // Checking correct order
+        for (int i = 0; i < capacity; i++) {
+            cache.put(i + capacity, testStrById(i + capacity));
+            Assert.assertEquals(capacity, cache.size());
+            Assert.assertNull(cache.get(i));
+        }
+    }
 }

@@ -30,4 +30,21 @@ public class SequentialListTest {
         Assert.assertFalse("List shouldn't contain the deleted person", list.remove("Kate"));
         Assert.assertEquals("Yan should be last person.", "Yan", list.removeLast().getValue());
     }
+
+    @Test
+    public void removeLastTest() {
+        SequentialList<Integer> list = new SequentialList<>();
+        list.addFirst(0);
+        list.addFirst(1);
+        list.addFirst(2);
+        Assert.assertEquals(3, list.size());
+
+        Assert.assertEquals(0, (int) list.removeLast().getValue());
+        Assert.assertEquals(1, (int) list.removeLast().getValue());
+        Assert.assertEquals(1, list.size());
+
+        Assert.assertEquals(2, (int) list.removeLast().getValue());
+        Assert.assertEquals(0, list.size());
+    }
+
 }
