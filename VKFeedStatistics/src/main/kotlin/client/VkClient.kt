@@ -1,7 +1,8 @@
 package client
 
+import protocol.VkApiResponse
 import java.io.Closeable
 
 interface VkClient : Closeable {
-    suspend fun countPostByHashtag(hashtag: String, hoursLimit: Int)
+    suspend fun countPostByHashtag(hashtag: String, hoursLimit: Int) : VkApiResponse?
 }
