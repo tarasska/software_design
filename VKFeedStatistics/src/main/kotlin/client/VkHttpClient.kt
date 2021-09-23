@@ -16,11 +16,19 @@ class VkHttpClient(config: VkApiConfig) : VkClient {
 
     override suspend fun countPostByHashtag(hashTag: String, hoursLimit: Long): VkApiResponse? {
         val requestTime = Instant.now()
+        return countPostByHashtag(
+            hashTag,
+            (requestTime - Duration.ofHours(hoursLimit)).epochSecond,
+            requestTime.epochSecond
+        )
+    }
+
+    override suspend fun countPostByHashtag(hashTag: String, startTimeSec: Long, endTimeSec: Long): VkApiResponse? {
         val rawResponse: String = httpClient.get(
             queryBuilder.buildHashTagCntQuery(
                 hashTag,
-                (requestTime - Duration.ofHours(hoursLimit)).epochSecond,
-                requestTime.epochSecond
+                startTimeSec,
+                endTimeSec
             )
         )
         return Klaxon().parse<VkApiResponse>(rawResponse)
