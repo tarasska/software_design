@@ -10,8 +10,11 @@ import protocol.VkQueryBuilder
 import java.time.Duration
 import java.time.Instant
 
-class VkHttpClient(config: VkApiConfig) : VkClient {
+class VkHttpClient(
+    config: VkApiConfig,
     private val httpClient: HttpClient = HttpClient(Apache)
+): VkClient {
+    
     private val queryBuilder = VkQueryBuilder(config)
 
     override suspend fun countPostByHashtag(hashTag: String, hoursLimit: Long): VkApiResponse? {
