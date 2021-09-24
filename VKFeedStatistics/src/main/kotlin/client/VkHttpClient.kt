@@ -1,6 +1,5 @@
 package client
 
-import com.beust.klaxon.Klaxon
 import protocol.VkApiConfig
 import protocol.VkApiResponse
 import protocol.VkQueryBuilder
@@ -14,7 +13,7 @@ class VkHttpClient(
 
     private val queryBuilder = VkQueryBuilder(config)
 
-    override suspend fun countPostByHashtag(hashTag: String, hoursLimit: Long): VkApiResponse? {
+    override suspend fun countPostByHashtag(hashTag: String, hoursLimit: Long): VkApiResponse {
         val requestTime = Instant.now()
         return countPostByHashtag(
             hashTag,
@@ -23,7 +22,7 @@ class VkHttpClient(
         )
     }
 
-    override suspend fun countPostByHashtag(hashTag: String, startTimeSec: Long, endTimeSec: Long): VkApiResponse? {
+    override suspend fun countPostByHashtag(hashTag: String, startTimeSec: Long, endTimeSec: Long): VkApiResponse {
         val rawResponse: String = httpClient.get(
             queryBuilder.buildHashTagCntQuery(
                 hashTag,
@@ -31,7 +30,7 @@ class VkHttpClient(
                 endTimeSec
             )
         )
-        return Klaxon().parse<VkApiResponse>(rawResponse)
+        return VkApiResponse.of(rawResponse)
     }
 
     override fun close() = httpClient.close()
