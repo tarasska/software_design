@@ -1,4 +1,6 @@
 {
+  "protocol": "https",
+  "host": "api.vk.com",
   "port": 443,
   "version" : {
     "major": 5,

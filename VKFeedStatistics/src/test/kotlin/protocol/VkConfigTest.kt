@@ -8,7 +8,7 @@ import java.lang.NullPointerException
 
 internal class VkConfigTest {
     @Test
-    fun testParsing() {
+    fun testParsingWithDefaults() {
         val config = VkApiConfig(
             ("""{
                 "port": 443,
@@ -19,6 +19,28 @@ internal class VkConfigTest {
             }""").byteInputStream(),
             "{\"access_token\": \"abc001efg002zzz\"}".byteInputStream()
         )
+        assertEquals(443, config.publicConfig.port)
+        assertEquals(5, config.publicConfig.version.major)
+        assertEquals(135, config.publicConfig.version.minor)
+        assertEquals("abc001efg002zzz", config.privateConfig.access_token)
+    }
+
+    @Test
+    fun testFullParsing() {
+        val config = VkApiConfig(
+            ("""{
+                "protocol": "http"
+                "host": "localhost"
+                "port": 443,
+                "version": {
+                    "major": 5,
+                    "minor": 135
+                }
+            }""").byteInputStream(),
+            "{\"access_token\": \"abc001efg002zzz\"}".byteInputStream()
+        )
+        assertEquals("http", config.publicConfig.protocol)
+        assertEquals("localhost", config.publicConfig.host)
         assertEquals(443, config.publicConfig.port)
         assertEquals(5, config.publicConfig.version.major)
         assertEquals(135, config.publicConfig.version.minor)
