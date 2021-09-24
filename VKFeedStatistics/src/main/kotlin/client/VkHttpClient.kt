@@ -1,9 +1,6 @@
 package client
 
 import com.beust.klaxon.Klaxon
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
-import io.ktor.client.request.get
 import protocol.VkApiConfig
 import protocol.VkApiResponse
 import protocol.VkQueryBuilder
@@ -12,9 +9,9 @@ import java.time.Instant
 
 class VkHttpClient(
     config: VkApiConfig,
-    private val httpClient: HttpClient = HttpClient(Apache)
+    private val httpClient: TrivialHttpClient = HttpClientWrapper()
 ): VkClient {
-    
+
     private val queryBuilder = VkQueryBuilder(config)
 
     override suspend fun countPostByHashtag(hashTag: String, hoursLimit: Long): VkApiResponse? {
