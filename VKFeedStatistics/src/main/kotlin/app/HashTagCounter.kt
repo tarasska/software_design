@@ -13,7 +13,7 @@ class HashTagCounter(private val client: VkHttpClient) {
             cntPerHour.add(client.countPostByHashtag(
                 hastTag,
                 (now - Duration.ofHours(i)).epochSecond,
-                now.epochSecond
+                (now - Duration.ofHours(i - 1)).epochSecond
             )?.response?.postCount ?: -1)
         }
         return cntPerHour
