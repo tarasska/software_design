@@ -1,6 +1,7 @@
 package app
 
 import client.VkHttpClient
+import protocol.HashTagCntResponse
 import java.time.Duration
 import java.time.Instant
 
@@ -10,11 +11,15 @@ class HashTagCounter(private val client: VkHttpClient) {
         val cntPerHour = ArrayList<Int>()
         val now = Instant.now()
         for (i in 1..(hours.toLong())) {
-            cntPerHour.add(client.countPostByHashtag(
+            val resp = client.countPostByHashtag(
                 hastTag,
                 (now - Duration.ofHours(i)).epochSecond,
                 (now - Duration.ofHours(i - 1)).epochSecond
-            )?.response?.postCount ?: -1)
+            )
+            cntPerHour.add(when (resp) {
+                is HashTagCntResponse -> resp.response.postCount
+                else -> -1
+            })
         }
         return cntPerHour
     }
