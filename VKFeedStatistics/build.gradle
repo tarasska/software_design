@@ -23,6 +23,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+
+    test {
+        testLogging {
+            events "passed", "skipped", "failed", "standardOut", "standardError"
+        }
+    }
 }
 
 compileKotlin {
