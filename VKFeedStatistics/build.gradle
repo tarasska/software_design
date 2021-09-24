@@ -15,10 +15,11 @@ dependencies {
     compile "io.ktor:ktor-client-apache:1.6.3"
     compile "com.beust:klaxon:5.5"
 
+    testCompile "org.slf4j:slf4j-log4j12:1.7.29"
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:5.8.0"
     testImplementation "org.mockito.kotlin:mockito-kotlin:3.2.0"
-
+    testImplementation "com.xebialabs.restito:restito:0.9.4"
 }
 
 test {

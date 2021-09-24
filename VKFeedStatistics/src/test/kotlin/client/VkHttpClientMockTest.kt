@@ -1,7 +1,5 @@
 package client
 
-import io.ktor.client.*
-import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -12,13 +10,12 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import protocol.HashTagCntResponse
 import protocol.VkApiConfig
-import protocol.VkApiResponse
 import protocol.VkQueryBuilder
 import java.time.Duration
 import java.time.Instant
 
 
-class VkHttpClientTest {
+class VkHttpClientMockTest {
 
     private var vkConfig = VkApiConfig(
         """{
