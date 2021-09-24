@@ -4,11 +4,13 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import protocol.HashTagCntResponse
 import protocol.VkApiConfig
 import protocol.VkApiResponse
 import protocol.VkQueryBuilder
@@ -50,9 +52,13 @@ class VkHttpClientTest {
                 )
             )
         ).thenReturn(resp)
+
+        val res = vkClient.countPostByHashtag(hashTag, stSec, endSec)
+
+        assertInstanceOf(HashTagCntResponse::class.java, res)
         assertEquals(
             vkClient.countPostByHashtag(hashTag, stSec, endSec),
-            VkApiResponse(VkApiResponse.InnerResponse(cnt))
+            HashTagCntResponse(HashTagCntResponse.InnerResponse(cnt))
         )
     }
 
