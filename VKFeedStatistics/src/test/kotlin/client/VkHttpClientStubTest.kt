@@ -1,16 +1,12 @@
 package client
 
 import com.xebialabs.restito.builder.stub.StubHttp.whenHttp
-import com.xebialabs.restito.semantics.Action.status
 import com.xebialabs.restito.semantics.Action.stringContent
 import com.xebialabs.restito.semantics.Condition.method
 import com.xebialabs.restito.semantics.Condition.startsWithUri
 import com.xebialabs.restito.server.StubServer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import org.glassfish.grizzly.http.Method
-import org.glassfish.grizzly.http.util.HttpStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.BeforeAll
@@ -18,11 +14,6 @@ import org.junit.jupiter.api.Test
 import protocol.ErrorResponse
 import protocol.HashTagCntResponse
 import protocol.VkApiConfig
-
-import java.util.function.Consumer
-
-
-
 
 class VkHttpClientStubTest {
     companion object {

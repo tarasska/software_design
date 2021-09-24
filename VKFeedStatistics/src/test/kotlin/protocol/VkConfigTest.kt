@@ -4,7 +4,6 @@ import com.beust.klaxon.KlaxonException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import java.lang.NullPointerException
 
 internal class VkConfigTest {
     @Test
