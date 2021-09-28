@@ -58,6 +58,17 @@ public class BaseServletRealDBTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @BeforeEach
+    public void clearDB() throws SQLException {
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:src/test/resources/test.db")) {
+            String sql = "DELETE FROM PRODUCT";
+            Statement stmt = c.createStatement();
+
+            stmt.executeUpdate(sql);
+            stmt.close();
+        }
+    }
+
     public void doGetNoExceptDefaultResponse(Consumer<StringWriter> test)
         throws IOException {
         StringWriter stringWriter = new StringWriter();
