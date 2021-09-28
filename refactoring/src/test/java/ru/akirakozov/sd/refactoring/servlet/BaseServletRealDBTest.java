@@ -58,13 +58,13 @@ public class BaseServletRealDBTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    public void doGetNoExceptDefaultResponse(Runnable test)
+    public void doGetNoExceptDefaultResponse(Consumer<StringWriter> test)
         throws IOException {
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         Mockito.when(response.getWriter()).thenReturn(writer);
 
-        test.run();
+        test.accept(stringWriter);
 
         Mockito.verify(response).setContentType("text/html");
         Mockito.verify(response).setStatus(HttpServletResponse.SC_OK);
