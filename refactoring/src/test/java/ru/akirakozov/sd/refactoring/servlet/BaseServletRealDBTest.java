@@ -2,7 +2,10 @@ package ru.akirakozov.sd.refactoring.servlet;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,9 +17,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 public class BaseServletRealDBTest {
+    @Mock
+    protected HttpServletRequest request;
+
+    @Mock
+    protected HttpServletResponse response;
+
     @BeforeAll
     public static void setup() throws SQLException {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:src/test/resources/test.db")) {
@@ -42,19 +53,18 @@ public class BaseServletRealDBTest {
         }
     }
 
-    public void doGetNoExceptDefaultResponse(BiConsumer<HttpServletRequest, HttpServletResponse> doGet)
+    @BeforeEach
+    public void initMock() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    public void doGetNoExceptDefaultResponse(Runnable test)
         throws IOException {
-        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
-        Mockito.when(request.getParameter("name")).thenReturn("iphone6");
-        Mockito.when(request.getParameter("price")).thenReturn("30000");
-
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         Mockito.when(response.getWriter()).thenReturn(writer);
 
-        doGet.accept(request, response);
+        test.run();
 
         Mockito.verify(response).setContentType("text/html");
         Mockito.verify(response).setStatus(HttpServletResponse.SC_OK);
