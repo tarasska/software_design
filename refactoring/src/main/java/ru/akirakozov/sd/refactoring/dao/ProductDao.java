@@ -16,9 +16,9 @@ public class ProductDao {
         dbManager.executeQuery(statement -> {
             String sql = "INSERT INTO PRODUCT " +
                     "(NAME, PRICE) VALUES (\"" + product.getName() + "\"," + product.getPrice() + ")";
-            statement.executeUpdate(sql);
+            int res = statement.executeUpdate(sql);
             statement.close();
-            return null;
+            return res;
         });
     }
 }
