@@ -3,6 +3,8 @@ package ru.akirakozov.sd.refactoring.servlet;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import ru.akirakozov.sd.refactoring.dao.ProductDao;
+import ru.akirakozov.sd.refactoring.database.DBManagerImpl;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -20,7 +22,9 @@ public class AddProductServletTest extends BaseServletRealDBTest {
                 Mockito.when(request.getParameter("name")).thenReturn("iphone6");
                 Mockito.when(request.getParameter("price")).thenReturn("30000");
 
-                new AddProductServlet().doGet(request, response);
+                new AddProductServlet(
+                    new ProductDao(new DBManagerImpl("jdbc:sqlite:src/test/resources/test.db"))
+                ).doGet(request, response);
                 assertTrue(writer.toString().contains("OK"));
             } catch (IOException e) {
                 fail("Unexpected exception", e);
