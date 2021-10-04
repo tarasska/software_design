@@ -35,11 +35,11 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        context.addServlet(new ServletHolder(new AddProductServlet(
-            new ProductDao(new DBManagerImpl("jdbc:sqlite:src/test/resources/test.db")))),
-            "/add-product"
+        ProductDao productDao = new ProductDao(
+            new DBManagerImpl("jdbc:sqlite:src/test/resources/test.db")
         );
-        context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
+        context.addServlet(new ServletHolder(new AddProductServlet(productDao)), "/add-product");
+        context.addServlet(new ServletHolder(new GetProductsServlet(productDao)),"/get-products");
         context.addServlet(new ServletHolder(new QueryServlet()),"/query");
 
         server.start();
