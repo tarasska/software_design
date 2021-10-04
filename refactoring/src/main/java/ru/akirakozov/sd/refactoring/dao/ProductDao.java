@@ -33,7 +33,9 @@ public class ProductDao {
 
     private void buildInfoHtml(PrintWriter writer, ResultSet rs, String header) throws SQLException {
         buildDefaultHtml(writer, w -> {
-            w.println(header);
+            if (header != null) {
+                w.println(header);
+            }
             if (rs.next()) {
                 writer.println(rs.getInt(1));
             }
@@ -51,14 +53,7 @@ public class ProductDao {
     public void getProducts(PrintWriter writer) throws SQLException {
         dbManager.executeQuery(statement -> {
             try (ResultSet rs = statement.executeQuery("SELECT * FROM PRODUCT")) {
-                writer.println("<html><body>");
-
-                while (rs.next()) {
-                    String name = rs.getString("name");
-                    int price = rs.getInt("price");
-                    writer.println(name + "\t" + price + "</br>");
-                }
-                writer.println("</body></html>");
+                buildFilteredProductHtml(writer, rs, null);
             }
         });
     }
