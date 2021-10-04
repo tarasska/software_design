@@ -37,7 +37,7 @@ public class ProductDao {
                 w.println(header);
             }
             if (rs.next()) {
-                writer.println(rs.getInt(1));
+                w.println(rs.getInt(1));
             }
         });
     }
