@@ -62,4 +62,36 @@ public class ProductDao {
             }
         });
     }
+
+    public void findProductsMaxPrice(PrintWriter writer) throws SQLException {
+        dbManager.executeQuery(statement -> {
+            try (ResultSet rs = statement.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1")) {
+                buildFilteredProductHtml(writer, rs, "<h1>Product with max price: </h1>");
+            }
+        });
+    }
+
+    public void findProductsMinPrice(PrintWriter writer) throws SQLException {
+        dbManager.executeQuery(statement -> {
+            try (ResultSet rs = statement.executeQuery("SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1")) {
+                buildFilteredProductHtml(writer, rs, "<h1>Product with min price: </h1>");
+            }
+        });
+    }
+
+    public void sumProductsPrice(PrintWriter writer) throws SQLException {
+        dbManager.executeQuery(statement -> {
+            try (ResultSet rs = statement.executeQuery("SELECT SUM(price) FROM PRODUCT")) {
+                buildInfoHtml(writer, rs, "Summary price: ");
+            }
+        });
+    }
+
+    public void countProducts(PrintWriter writer) throws SQLException {
+        dbManager.executeQuery(statement -> {
+            try (ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM PRODUCT")) {
+                buildInfoHtml(writer, rs, "Number of products: ");
+            }
+        });
+    }
 }
