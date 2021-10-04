@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class RealDBTest {
 
-    private static String TEST_DB_URL = "jdbc:sqlite:src/test/resources/test.db";
+    protected static String TEST_DB_URL = "jdbc:sqlite:src/test/resources/test.db";
 
     private static void executeSql(String query) throws SQLException {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:src/test/resources/test.db")) {
