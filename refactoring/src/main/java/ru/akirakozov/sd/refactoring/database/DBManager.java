@@ -6,15 +6,18 @@ import java.sql.Statement;
 
 public interface DBManager {
     @FunctionalInterface
-    interface CheckedFun<T, R> {
-        R apply(T t) throws SQLException;
+    interface CheckedConsumer<T> {
+        void accept(T t) throws SQLException;
     }
 
     Connection getConnection() throws SQLException;
 
-    default <R> R executeQuery(CheckedFun<Statement, R> query) throws SQLException {
-        try (Connection c = getConnection()) {
-            return query.apply(c.createStatement());
+    default void executeQuery(CheckedConsumer<Statement> query) throws SQLException {
+        try (
+            Connection c = getConnection();
+            Statement statement = c.createStatement()
+        ) {
+            query.accept(statement);
         }
     }
 }
