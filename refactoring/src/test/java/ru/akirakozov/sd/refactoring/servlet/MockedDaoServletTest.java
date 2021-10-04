@@ -11,7 +11,9 @@ import ru.akirakozov.sd.refactoring.entities.Product;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +43,49 @@ public class MockedDaoServletTest extends BaseTest {
             new AddProductServlet(dao).doGet(request, response);
 
             verify(dao).addProduct(new Product("item", 100));
+        });
+    }
+
+    @Test
+    public void getProductsServlet() {
+        testWithWriter((stringWriter, printWriter) -> {
+            when(response.getWriter()).thenReturn(printWriter);
+
+            new GetProductsServlet(dao).doGet(request, response);
+
+            verify(dao).getProducts(printWriter);
+        });
+    }
+
+    @Test
+    public void queryServlet() {
+        testWithWriter((stringWriter, printWriter) -> {
+            when(response.getWriter()).thenReturn(printWriter);
+
+            List<String> commands = List.of("min", "max", "count", "sum", "unknown");
+
+            QueryServlet servlet = new QueryServlet(dao);
+
+            for (String cmd : commands) {
+                when(request.getParameter("command")).thenReturn(cmd);
+                servlet.doGet(request, response);
+                switch (cmd) {
+                    case "min":
+                        verify(dao).findProductsMinPrice(printWriter);
+                        break;
+                    case "max":
+                        verify(dao).findProductsMaxPrice(printWriter);
+                        break;
+                    case "count":
+                        verify(dao).countProducts(printWriter);
+                        break;
+                    case "sum":
+                        verify(dao).sumProductsPrice(printWriter);
+                        break;
+                    default:
+                        assertEquals("Unknown command: unknown" + newLine, stringWriter.toString());
+                }
+            }
         });
     }
 }
