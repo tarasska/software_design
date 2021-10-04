@@ -9,7 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class RealDBTest {
+public class RealDBTest extends BaseTest {
 
     protected static String TEST_DB_URL = "jdbc:sqlite:src/test/resources/test.db";
 

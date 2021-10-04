@@ -1,56 +1,20 @@
 package ru.akirakozov.sd.refactoring.dao;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+
 import ru.akirakozov.sd.refactoring.RealDBTest;
 import ru.akirakozov.sd.refactoring.database.DBManager;
 import ru.akirakozov.sd.refactoring.database.DBManagerImpl;
 import ru.akirakozov.sd.refactoring.entities.Product;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ProductDaoTest extends RealDBTest {
-    @FunctionalInterface
-    interface CheckedBiConsumer<T1, T2> {
-        void accept(T1 t1, T2 t2) throws SQLException;
-    }
-
     private final DBManager manager = new DBManagerImpl(TEST_DB_URL);
     private final ProductDao dao = new ProductDao(manager);
-    private final String nameColumn = "name";
-    private final String priceColumn = "price";
-    private final String newLine = System.lineSeparator();
-
-    private String buildDefaultHtml(String body) {
-        return "<html><body>" + newLine
-            + (body != null ? body + newLine : "")
-            + "</body></html>" + newLine;
-    }
-
-    private String buildProductHtmlRow(Product product) {
-        return product.getName() + "\t" + product.getPrice() + "</br>";
-    }
-
-    private void clearStringWriter(StringWriter writer) {
-        writer.getBuffer().setLength(0);
-    }
-
-    private void testWithWriter(CheckedBiConsumer<StringWriter, PrintWriter> test) {
-        assertDoesNotThrow(() -> {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-
-            test.accept(stringWriter, printWriter);
-        });
-    }
-
 
     @Test
     public void addTest() {
