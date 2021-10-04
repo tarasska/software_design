@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,11 +26,12 @@ public class ProductDaoTest extends RealDBTest {
     private final ProductDao dao = new ProductDao(manager);
     private final String nameColumn = "name";
     private final String priceColumn = "price";
+    private final String newLine = System.lineSeparator();
 
     private String buildDefaultHtml(String body) {
-        return "<html><body>" + System.lineSeparator()
-            + (body != null ? body + System.lineSeparator() : "")
-            + "</body></html>" + System.lineSeparator();
+        return "<html><body>" + newLine
+            + (body != null ? body + newLine : "")
+            + "</body></html>" + newLine;
     }
 
     private String buildProductHtmlRow(Product product) {
@@ -94,10 +96,75 @@ public class ProductDaoTest extends RealDBTest {
             dao.getProducts(printWriter);
 
             String productsHtml = buildDefaultHtml(
-                buildProductHtmlRow(item1) + System.lineSeparator() +
+                buildProductHtmlRow(item1) + newLine +
                     buildProductHtmlRow(item2)
             );
             assertEquals(productsHtml, stringWriter.toString());
+        });
+    }
+
+    @Test
+    public void maxPriceTest() {
+        testWithWriter((stringWriter, printWriter) -> {
+            List<Product> products = List.of(
+                new Product("item1", 999),
+                new Product("item2", 1),
+                new Product("item3", 10000)
+            );
+            for (Product product : products) {
+                dao.addProduct(product);
+            }
+            dao.findProductsMaxPrice(printWriter);
+            String maxPriceHtml = buildDefaultHtml(
+                "<h1>Product with max price: </h1>" + newLine +
+                    buildProductHtmlRow(products.get(2))
+            );
+            assertEquals(maxPriceHtml, stringWriter.toString());
+        });
+    }
+
+    @Test
+    public void minPriceTest() {
+        testWithWriter((stringWriter, printWriter) -> {
+            List<Product> products = List.of(
+                new Product("item1", 123456),
+                new Product("item2", 0),
+                new Product("item3", 1)
+            );
+            for (Product product : products) {
+                dao.addProduct(product);
+            }
+            dao.findProductsMinPrice(printWriter);
+            String minPriceHtml = buildDefaultHtml(
+                "<h1>Product with min price: </h1>" + newLine +
+                    buildProductHtmlRow(products.get(1))
+            );
+            assertEquals(minPriceHtml, stringWriter.toString());
+        });
+    }
+
+    @Test
+    public void countTest() {
+        testWithWriter((stringWriter, printWriter) -> {
+            for (int i = 0; i < 50; i++) {
+                dao.addProduct(new Product("item" + i, i));
+            }
+            dao.countProducts(printWriter);
+            String countHtml = buildDefaultHtml("Number of products: " + newLine + 50);
+            assertEquals(countHtml, stringWriter.toString());
+        });
+    }
+
+    @Test
+    public void sumTest() {
+        testWithWriter((stringWriter, printWriter) -> {
+            for (int i = 0; i < 10; i++) {
+                dao.addProduct(new Product("item" + i, i));
+            }
+            int expectedSum = 45;
+            dao.sumProductsPrice(printWriter);
+            String sumHtml = buildDefaultHtml("Summary price: " + newLine + expectedSum);
+            assertEquals(sumHtml, stringWriter.toString());
         });
     }
 }
