@@ -22,7 +22,9 @@ public class ProductDao {
 
     private void buildFilteredProductHtml(PrintWriter writer, ResultSet rs, String header) throws SQLException {
         buildDefaultHtml(writer, w -> {
-            w.println(header);
+            if (header != null) {
+                w.println(header);
+            }
             while (rs.next()) {
                 String name = rs.getString("name");
                 int price = rs.getInt("price");
