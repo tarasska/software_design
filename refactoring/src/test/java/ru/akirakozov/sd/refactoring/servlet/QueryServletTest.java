@@ -2,6 +2,8 @@ package ru.akirakozov.sd.refactoring.servlet;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import ru.akirakozov.sd.refactoring.dao.ProductDao;
+import ru.akirakozov.sd.refactoring.database.DBManagerImpl;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -15,7 +17,9 @@ public class QueryServletTest extends BaseServletRealDBTest {
             try {
                 Mockito.when(request.getParameter("command")).thenReturn(command);
 
-                new QueryServlet().doGet(request, response);
+                new QueryServlet(new ProductDao(
+                    new DBManagerImpl("jdbc:sqlite:src/test/resources/test.db")
+                )).doGet(request, response);
 
                 String expectedLogResult
                     = "<html><body>" + System.lineSeparator()
