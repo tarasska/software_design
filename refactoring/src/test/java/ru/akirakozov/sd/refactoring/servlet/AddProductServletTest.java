@@ -1,7 +1,6 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import ru.akirakozov.sd.refactoring.dao.ProductDao;
 import ru.akirakozov.sd.refactoring.database.DBManagerImpl;
