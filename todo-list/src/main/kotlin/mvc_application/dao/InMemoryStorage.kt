@@ -8,7 +8,7 @@ class InMemoryStorage : Storage {
     private val nameToLists: MutableMap<String, TaskList> = ConcurrentHashMap()
     private val idToListNames: MutableMap<Int, String> = ConcurrentHashMap()
     override fun createTaskList(name: String) {
-        TODO("Not yet implemented")
+        nameToLists.putIfAbsent(name, TaskList(name))
     }
 
     override fun deleteTaskList(name: String) {
