@@ -7,8 +7,8 @@ import org.springframework.boot.runApplication
  * @author tarasska
  */
 @SpringBootApplication
-class App {
-    fun main(args: Array<String>) {
-        runApplication<App>(*args)
-    }
+class App
+
+fun main(args: Array<String>) {
+    runApplication<App>(*args)
 }
