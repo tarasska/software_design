@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <title>Table</title>
+</head>
+<body>
+
+<h3>Create new list</h3>
+<form method="POST" action="/add-list">
+    <input type="text" th:name="name">
+    <input type="submit" value="add">
+</form>
+
+<h3>Available lists:</h3>
+<form method="GET" action="/get-lists">
+</form>
+<table>
+    <th:block th:each="task : ${taskLists}">
+        <tr>
+            <td th:text="${task.name}"/>
+        </tr>
+    </th:block>
+</table>
+
+
+</body>
+</html>
