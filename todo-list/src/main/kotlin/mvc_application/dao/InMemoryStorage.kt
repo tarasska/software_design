@@ -11,10 +11,12 @@ class InMemoryStorage : Storage {
 
     override fun createTaskList(name: String) {
         nameToLists.putIfAbsent(name, TaskList(name))
+        nameToTaskIdGen[name] = AtomicInteger(0)
     }
 
     override fun deleteTaskList(name: String) {
         nameToLists.remove(name)
+        nameToTaskIdGen.remove(name)
     }
 
     override fun getAllLists(): List<TaskList> {
