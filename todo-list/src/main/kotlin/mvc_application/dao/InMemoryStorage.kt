@@ -28,13 +28,11 @@ class InMemoryStorage : Storage {
     }
 
     override fun addTask(listName: String, header: String, content: String): Int {
-        val list = nameToLists[listName]
-        if (list === null) {
-            throw NoSuchElementException("List with provided name=$listName not found.")
-        }
-        val id = nameToTaskIdGen[listName]!!.getAndIncrement()
-        list.addTask(Task(id, header, content))
-        return id
+        nameToLists[listName]?.let {
+            val id = nameToTaskIdGen[listName]!!.getAndIncrement()
+            it.addTask(Task(id, header, content))
+            return id
+        } ?: throw NoSuchElementException("List with provided name=$listName not found.")
     }
 
     override fun removeTask(listName: String, taskId: Int) {
