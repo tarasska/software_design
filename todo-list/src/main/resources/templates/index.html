@@ -5,18 +5,30 @@
     <title>Table</title>
 </head>
 <body>
-
-<h3>Create new list</h3>
-<form method="POST" action="/add-list">
-    <input type="text" th:name="name">
-    <input type="submit" value="add">
+<form method="POST" action="/create-list">
+    <div>
+        Create new list:
+        <input type="text" th:name="name">
+        <input type="submit" value="Create">
+    </div>
 </form>
 
-<h3>Available lists:</h3>
+<form method="POST" action="/delete-list">
+    <div>
+        Delete list:
+        <input type="text" th:name="name">
+        <input type="submit" value="Delete">
+    </div>
+</form>
+
 <form method="GET" action="/get-list">
-    <input type="text" th:name="listName">
-    <input type="submit" value="Open">
+    <div>
+        Available lists:
+        <input type="text" th:name="listName">
+        <input type="submit" value="Open">
+    </div>
 </form>
+
 <table>
     <th:block th:each="list : ${taskLists}">
         <tr>
@@ -27,4 +39,9 @@
 
 
 </body>
+<style>
+    div {
+        margin-top: 1rem;
+    }
+</style>
 </html>

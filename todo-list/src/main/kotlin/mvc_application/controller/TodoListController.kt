@@ -17,9 +17,15 @@ class TodoListController(
         map.addAttribute("taskList", taskListStorage.findListByName(name))
     }
 
-    @PostMapping("/add-list")
-    fun addList(@RequestParam name: String): String {
+    @PostMapping("/create-list")
+    fun createList(@RequestParam name: String): String {
         taskListStorage.createTaskList(name)
+        return "redirect:/get-lists"
+    }
+
+    @PostMapping("/delete-list")
+    fun deleteList(@RequestParam name: String): String {
+        taskListStorage.deleteTaskList(name)
         return "redirect:/get-lists"
     }
 
