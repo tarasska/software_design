@@ -17,6 +17,10 @@ class TodoListController(
         map.addAttribute("taskList", taskListStorage.findListByName(name))
     }
 
+    @GetMapping("/")
+    fun getMainPage(): String = "redirect:/get-lists"
+
+
     @PostMapping("/create-list")
     fun createList(@RequestParam name: String): String {
         taskListStorage.createTaskList(name)

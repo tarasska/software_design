@@ -23,16 +23,17 @@
 
 <form method="GET" action="/get-list">
     <div>
-        Available lists:
+        Open list:
         <input type="text" th:name="listName">
         <input type="submit" value="Open">
     </div>
 </form>
 
+<h3>Available lists</h3>
 <table>
     <th:block th:each="list : ${taskLists}">
         <tr>
-            <td th:text="${list.name}"/>
+            <td th:text="${list.getName()}"/>
         </tr>
     </th:block>
 </table>
