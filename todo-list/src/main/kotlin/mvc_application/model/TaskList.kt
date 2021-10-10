@@ -12,4 +12,6 @@ class TaskList(
     fun addTask(task: Task) = tasks.add(task)
 
     fun removeTask(taskId: Int) = tasks.removeIf {task -> task.id == taskId}
+
+    fun getTasks(): MutableList<Task> = tasks
 }

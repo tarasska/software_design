@@ -13,12 +13,14 @@
 </form>
 
 <h3>Available lists:</h3>
-<form method="GET" action="/get-lists">
+<form method="GET" action="/get-list">
+    <input type="text" th:name="listName">
+    <input type="submit" value="Open">
 </form>
 <table>
-    <th:block th:each="task : ${taskLists}">
+    <th:block th:each="list : ${taskLists}">
         <tr>
-            <td th:text="${task.name}"/>
+            <td th:text="${list.name}"/>
         </tr>
     </th:block>
 </table>

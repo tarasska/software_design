@@ -22,4 +22,22 @@ class TodoListController(
         map.addAttribute("taskLists", taskListStorage.getAllLists())
         return "index"
     }
+
+    @GetMapping("/get-list")
+    fun getList(@RequestParam listName: String, map: Model): String {
+        map.addAttribute("taskList", taskListStorage.findListByName(listName))
+        return "tasklist"
+    }
+
+    @PostMapping("/add-task")
+    fun addTask(
+        @RequestParam header: String,
+        @RequestParam content: String,
+        @RequestParam taskListName: String,
+        map: Model
+    ): String {
+        taskListStorage.addTask(taskListName, header, content)
+        map.addAttribute("taskList", taskListStorage.findListByName(taskListName))
+        return "tasklist"
+    }
 }

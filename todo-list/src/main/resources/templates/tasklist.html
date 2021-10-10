@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+    <title th:text="${taskList.name}"/>
+</head>
+<body>
+<form method="POST" action="/add-task">
+    <input type="text" th:name="header">
+    <input type="text" th:name="content">
+    <input type="hidden" th:name="taskListName" th:value="${taskList.getName()}">
+    <input type="submit" value="create">
+</form>
+<table>
+    <p>Tasks:</p>
+    <th:block th:each="task : ${taskList.getTasks()}">
+        <tr>
+            <td th:text="${task.id}"/>
+            <td th:text="${task.header}"/>
+            <td th:text="${task.content}"/>
+        </tr>
+    </th:block>
+</table>
+
+</body>
+</html>
