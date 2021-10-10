@@ -1,6 +1,7 @@
 package mvc_application.controller
 
 import mvc_application.dao.Storage
+import mvc_application.model.TaskStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -11,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam
 class TodoListController(
     private val taskListStorage: Storage
 ) {
+
+    private fun updateTaskListView(map: Model, name: String) {
+        map.addAttribute("taskList", taskListStorage.findListByName(name))
+    }
+
     @PostMapping("/add-list")
     fun addList(@RequestParam name: String): String {
         taskListStorage.createTaskList(name)
@@ -25,7 +31,7 @@ class TodoListController(
 
     @GetMapping("/get-list")
     fun getList(@RequestParam listName: String, map: Model): String {
-        map.addAttribute("taskList", taskListStorage.findListByName(listName))
+        updateTaskListView(map, listName)
         return "tasklist"
     }
 
@@ -37,7 +43,30 @@ class TodoListController(
         map: Model
     ): String {
         taskListStorage.addTask(taskListName, header, content)
-        map.addAttribute("taskList", taskListStorage.findListByName(taskListName))
+        updateTaskListView(map, taskListName)
+        return "tasklist"
+    }
+
+    @PostMapping("/remove-task")
+    fun removedTask(
+        @RequestParam taskId: Int,
+        @RequestParam taskListName: String,
+        map: Model
+    ): String {
+        taskListStorage.removeTask(taskListName, taskId)
+        updateTaskListView(map, taskListName)
+        return "tasklist"
+    }
+
+    @PostMapping("/close-task")
+    fun closeTask(
+        @RequestParam taskId: Int,
+        @RequestParam taskListName: String,
+        map: Model
+    ): String {
+        val task = taskListStorage.findListByName(taskListName)!!.getTasks().first{t -> t.id == taskId}
+        task.status = TaskStatus.CLOSED
+        updateTaskListView(map, taskListName)
         return "tasklist"
     }
 }
