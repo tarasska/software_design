@@ -1,6 +1,7 @@
 package graph
 
 interface RenderableGraph {
-    fun renderNode()
+    fun renderNode(id: Int)
+    fun renderEdge(fromId: Int, toId: Int)
     fun renderGraph()
 }
