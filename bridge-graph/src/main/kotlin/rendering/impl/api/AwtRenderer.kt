@@ -1,4 +1,4 @@
-package rendering.impl
+package rendering.impl.api
 
 import rendering.RenderingApi
 import rendering.model.Point

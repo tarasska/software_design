@@ -1,4 +1,4 @@
-package rendering.impl
+package rendering.impl.api
 
 import javafx.scene.canvas.Canvas
 import rendering.RenderingApi
