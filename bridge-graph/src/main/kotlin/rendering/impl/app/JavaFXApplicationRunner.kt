@@ -18,7 +18,7 @@ class JavaFXApplicationRunner(
 ): Runnable {
     class JavaFXApplication : Application() {
         override fun start(primaryStage: Stage) {
-            val canvas = Canvas(staticHeight.toDouble(), staticWidth.toDouble())
+            val canvas = Canvas(staticWidth.toDouble(), staticHeight.toDouble())
             primaryStage.scene = Scene(Group(canvas), Color.CORAL)
             staticGraphConstructor(
                 JavaFXRenderer(
@@ -27,6 +27,7 @@ class JavaFXApplicationRunner(
                     staticWidth.toLong()
                 )
             ).renderGraph()
+            primaryStage.isResizable = false
             primaryStage.show()
         }
     }

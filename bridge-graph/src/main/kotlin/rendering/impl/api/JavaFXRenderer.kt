@@ -1,6 +1,7 @@
 package rendering.impl.api
 
 import javafx.scene.canvas.Canvas
+import javafx.scene.paint.Color
 import rendering.RenderingApi
 import rendering.model.Point
 
@@ -22,5 +23,11 @@ class JavaFXRenderer(
 
     override fun drawLine(from: Point<Double>, to: Point<Double>) {
         canvas.graphicsContext2D.strokeLine(from.getX(), from.getY(), to.getX(), to.getY())
+    }
+
+    override fun drawLabel(point: Point<Double>, label: String) {
+        canvas.graphicsContext2D.fill = Color.GREEN
+        canvas.graphicsContext2D.fillText(label, point.getX(), point.getY())
+        canvas.graphicsContext2D.fill = Color.BLACK
     }
 }

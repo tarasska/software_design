@@ -7,4 +7,5 @@ interface RenderingApi<T> {
     fun getDrawingAreaHeight(): Long
     fun drawCircle(point: Point<T>, radius: T)
     fun drawLine(from: Point<T>, to: Point<T>)
+    fun drawLabel(point: Point<T>, label: String)
 }

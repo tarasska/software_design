@@ -13,16 +13,16 @@ abstract class Graph(
 ): RenderableGraph {
 
     protected val canvasCenter: DoublePoint = DoublePoint(
-        renderer.getDrawingAreaWidth().toDouble(),
-        renderer.getDrawingAreaHeight().toDouble()
+        renderer.getDrawingAreaWidth().toDouble() / 2,
+        renderer.getDrawingAreaHeight().toDouble() / 2
     )
     protected val maxCircleRadius: Double = min(
         renderer.getDrawingAreaWidth(), renderer.getDrawingAreaHeight()
-    ) * WORK_AREA_PROPORTION / 2
+    ) * WORK_AREA_PROPORTION / 8
     protected val nodeRadius = min(
         renderer.getDrawingAreaWidth(),
         renderer.getDrawingAreaHeight()
-    ) * (1 - WORK_AREA_PROPORTION) / 2
+    ) * (1 - WORK_AREA_PROPORTION) / 4
 
     /**
      *  Places node in a circle.
@@ -33,7 +33,9 @@ abstract class Graph(
     }
 
     override fun renderNode(id: Int) {
-        renderer.drawCircle(positionById(id), nodeRadius)
+        val pos = positionById(id)
+        renderer.drawCircle(pos, nodeRadius)
+        renderer.drawLabel(pos, "$id")
     }
 
     override fun renderEdge(fromId: Int, toId: Int) {
