@@ -25,4 +25,16 @@ class PrintVisitorTest : BaseTest() {
         "(1 + 2 / 3) + (0 * 3)",
         "NUMBER(1) NUMBER(2) NUMBER(3) DIV ADD NUMBER(0) NUMBER(3) MUL ADD"
     )
+
+    @Test
+    fun complexOrder() = printTest(
+        "3 + 2 * 2 -    2 /2",
+    "NUMBER(3) NUMBER(2) NUMBER(2) MUL ADD NUMBER(2) NUMBER(2) DIV SUB"
+    )
+
+    @Test
+    fun complexOrder2() = printTest(
+        "3 + 1 * 2 * (3 - 1) - 1",
+        "NUMBER(3) NUMBER(1) NUMBER(2) MUL NUMBER(3) NUMBER(1) SUB MUL ADD NUMBER(1) SUB"
+    )
 }
