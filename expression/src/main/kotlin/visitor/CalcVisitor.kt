@@ -6,13 +6,13 @@ import java.util.*
 class CalcVisitor : TokenVisitor<Int> {
     private val stack = ArrayDeque<Int>()
 
-    private fun binOp(op: (Int, Int) -> Int): Int {
+    private fun binOp(op: (Int, Int) -> Int) {
         if (stack.size < 2) {
             error("Incorrect token sequence, not enough number for binary operation.")
         }
         val r = stack.pop()
         val l = stack.pop()
-        return op(l, r)
+        stack.push(op(l, r))
     }
 
     override fun visit(token: NumberToken) {
@@ -31,7 +31,7 @@ class CalcVisitor : TokenVisitor<Int> {
     }
 
     override fun visitAll(tokens: List<Token>): Int {
-        tokens.forEach { t -> t.accept(this) }
+        ParserVisitor().visitAll(tokens).forEach { t -> t.accept(this) }
         if (stack.size == 1) {
             return stack.pop()
         } else {
