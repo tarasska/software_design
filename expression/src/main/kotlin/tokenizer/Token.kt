@@ -13,7 +13,7 @@ sealed class ShowableToken(private val view: String): Token() {
 /**
  * Operation section.
  */
-sealed class OperationToken(private val view: String): ShowableToken(view) {
+sealed class OperationToken(view: String): ShowableToken(view) {
     override fun accept(visitor: TokenVisitor) = visitor.visit(this)
 }
 object ADD : OperationToken("ADD")
@@ -24,7 +24,7 @@ object DIV : OperationToken("DIV")
 /**
  * Bracket section.
  */
-sealed class BraceToken(private val view: String): ShowableToken(view) {
+sealed class BraceToken(view: String): ShowableToken(view) {
     override fun accept(visitor: TokenVisitor) = visitor.visit(this)
 }
 object LEFT : BraceToken("LEFT")
@@ -33,6 +33,6 @@ object RIGHT : BraceToken("RIGHT")
 /**
  * Numbers section.
  */
-sealed class NumberToken(private val view: Int): ShowableToken("NUMBER($view)") {
+class NumberToken(view: Int): ShowableToken("NUMBER($view)") {
     override fun accept(visitor: TokenVisitor) = visitor.visit(this)
 }
