@@ -1,7 +1,7 @@
 package tokenizer
 
 class Tokenizer(private val src: String) {
-    private var state: TokenizerState = State()
+    private var state: TokenizerState = State(mutableListOf())
 
     fun tokenize(): List<Token> {
         src.forEach { ch ->

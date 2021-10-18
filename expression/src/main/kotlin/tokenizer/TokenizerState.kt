@@ -1,15 +1,13 @@
 package tokenizer
 
-sealed class TokenizerState {
-    protected val tokens = mutableListOf<Token>()
+sealed class TokenizerState(protected val tokens: MutableList<Token>) {
 
-    fun getActualTokens(): List<Token> = tokens
+    open fun getActualTokens(): List<Token> = tokens
 
     abstract fun nextChar(ch: Char): TokenizerState
-
 }
 
-class State : TokenizerState() {
+class State(tokens: MutableList<Token>) : TokenizerState(tokens) {
 
     private fun selfState(token: Token): TokenizerState {
         tokens.add(token)
@@ -23,25 +21,33 @@ class State : TokenizerState() {
         '/' -> selfState(DIV)
         '(' -> selfState(LEFT)
         ')' -> selfState(RIGHT)
-        in '0'..'9' -> NumberState(ch - '0')
-        else -> FailedState(ch)
+        in '0'..'9' -> NumberState(tokens, ch - '0')
+        ' ' -> this
+        else -> FailedState(tokens, ch)
     }
 }
 
 class NumberState(
+    tokens: MutableList<Token>,
     private val number: Int
-) : TokenizerState() {
+) : TokenizerState(tokens) {
 
     override fun nextChar(ch: Char): TokenizerState = when (ch) {
-        in '0'..'9' -> NumberState(number * 10 + (ch - '0'))
+        in '0'..'9' -> NumberState(tokens, number * 10 + (ch - '0'))
         else -> {
             tokens.add(NumberToken(number))
-            State().nextChar(ch)
+            State(tokens).nextChar(ch)
         }
+    }
+
+    override fun getActualTokens(): List<Token> {
+        val completedTokens = tokens.toMutableList()
+        completedTokens.add(NumberToken(number))
+        return completedTokens
     }
 }
 
-class FailedState(ch: Char): TokenizerState() {
+class FailedState(tokens: MutableList<Token>, ch: Char): TokenizerState(tokens) {
 
     val message = "Unable to tokenize char: $ch"
 
