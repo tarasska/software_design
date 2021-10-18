@@ -1,9 +1,9 @@
 package visitor
 
 import tokenizer.*
-import java.io.OutputStreamWriter
+import java.io.Writer
 
-class PrintVisitor(private val output: OutputStreamWriter) : TokenVisitor<Unit> {
+class PrintVisitor(private val output: Writer) : TokenVisitor<Unit> {
     override fun visit(token: NumberToken) = output.write(token.show())
     override fun visit(token: BraceToken) = output.write(token.show())
 
