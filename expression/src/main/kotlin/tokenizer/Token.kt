@@ -33,6 +33,6 @@ object RIGHT : BraceToken("RIGHT")
 /**
  * Numbers section.
  */
-class NumberToken(view: Int): ShowableToken("NUMBER($view)") {
+class NumberToken(val value: Int): ShowableToken("NUMBER($value)") {
     override fun accept(visitor: TokenVisitor<*>) = visitor.visit(this)
 }
