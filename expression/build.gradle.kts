@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.5.20"
 }
 
 group = "me.ubcloud"
@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     testImplementation(kotlin("test"))
 }
 
@@ -19,6 +20,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }

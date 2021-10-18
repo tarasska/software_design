@@ -23,7 +23,7 @@ class State : TokenizerState() {
         '/' -> selfState(DIV)
         '(' -> selfState(LEFT)
         ')' -> selfState(RIGHT)
-        in '0'..'9' -> NumberState(ch.digitToInt())
+        in '0'..'9' -> NumberState(ch - '0')
         else -> FailedState(ch)
     }
 }
@@ -33,7 +33,7 @@ class NumberState(
 ) : TokenizerState() {
 
     override fun nextChar(ch: Char): TokenizerState = when (ch) {
-        in '0'..'9' -> NumberState(number * 10 + ch.digitToInt())
+        in '0'..'9' -> NumberState(number * 10 + (ch - '0'))
         else -> {
             tokens.add(NumberToken(number))
             State().nextChar(ch)
