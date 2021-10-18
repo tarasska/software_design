@@ -3,7 +3,7 @@ package visitor
 import tokenizer.*
 import java.util.ArrayDeque
 
-class ParserVisitor : TokenVisitor {
+class ParserVisitor : TokenVisitor<List<Token>> {
     private val stack = ArrayDeque<Token>()
     private val revNotation = mutableListOf<Token>()
 
