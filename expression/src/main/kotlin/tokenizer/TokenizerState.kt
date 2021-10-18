@@ -2,6 +2,9 @@ package tokenizer
 
 sealed class TokenizerState(protected val tokens: MutableList<Token>) {
 
+    /**
+     * Returns actual tokens with possibly uncompleted token (as number)
+     */
     open fun getActualTokens(): List<Token> = tokens
 
     abstract fun nextChar(ch: Char): TokenizerState
