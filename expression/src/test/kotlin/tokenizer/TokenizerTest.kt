@@ -1,18 +1,10 @@
+package tokenizer
+
+import BaseTest
 import org.junit.jupiter.api.Test
-import tokenizer.ShowableToken
-import tokenizer.Token
-import tokenizer.Tokenizer
-import java.util.stream.Collectors
 import kotlin.test.assertEquals
 
-class TokenizerTest {
-
-    private fun showTokens(tokens: List<Token>): String {
-        return tokens.stream()
-            .filter {t -> t is ShowableToken }
-            .map {t -> (t as ShowableToken).show()}
-            .collect(Collectors.joining(" "))
-    }
+class TokenizerTest : BaseTest() {
 
     private fun showTest(src: String, expected: String) {
         val tokenizer = Tokenizer(src)
