@@ -7,6 +7,10 @@ class ParserVisitor : TokenVisitor<List<Token>> {
     private val stack = ArrayDeque<Token>()
     private val revNotation = mutableListOf<Token>()
 
+    private fun less(l: OperationToken, r: OperationToken): Boolean {
+        return (l is ADD || l is SUB) && (r is MUL || r is DIV)
+    }
+
     override fun visit(token: NumberToken) {
         revNotation.add(token)
     }
@@ -28,6 +32,12 @@ class ParserVisitor : TokenVisitor<List<Token>> {
     }
 
     override fun visit(token: OperationToken) {
+        while (stack.isNotEmpty()
+            && stack.peek() is OperationToken
+            && !less(stack.peek() as OperationToken, token)
+        ) {
+            revNotation.add(stack.pop())
+        }
         stack.push(token)
     }
 
