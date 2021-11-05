@@ -17,13 +17,13 @@ public class CallStackProfiler {
     private static final String NL = System.lineSeparator();
     private static String packageName;
 
-    private Map<String, Long> callCount = new HashMap<>();
-    private Map<String, Long> failCount = new HashMap<>();
-    private Map<String, Duration> methodSumDuration = new HashMap<>();
+    private final Map<String, Long> callCount = new HashMap<>();
+    private final Map<String, Long> failCount = new HashMap<>();
+    private final Map<String, Duration> methodSumDuration = new HashMap<>();
 
-    private List<MethodStat> callSequence = new ArrayList<>();
+    private final List<MethodStat> callSequence = new ArrayList<>();
 
-    private Deque<StackNode> callStack = new ArrayDeque<>();
+    private final Deque<StackNode> callStack = new ArrayDeque<>();
 
     private CallStackProfiler() {
     }
@@ -154,6 +154,14 @@ public class CallStackProfiler {
         callSequence.forEach(
             methodStat -> uncheckedWrite(writer, callSeqNodeToString(methodStat))
         );
+    }
+
+    public void clear() {
+        callCount.clear();
+        failCount.clear();
+        methodSumDuration.clear();
+        callSequence.clear();
+        callStack.clear();
     }
 
     static class StackNode {
