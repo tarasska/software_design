@@ -4,7 +4,7 @@ import org.aspectj.lang.Signature;
 import profiler.model.MethodStat;
 import profiler.model.TimeInterval;
 
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.time.Duration;
@@ -14,6 +14,7 @@ import java.util.*;
 public class CallStackProfiler {
     public static final CallStackProfiler INSTANCE = new CallStackProfiler();
 
+    private static final String NL = System.lineSeparator();
     private static String packageName;
 
     private Map<String, Long> callCount = new HashMap<>();
@@ -31,6 +32,36 @@ public class CallStackProfiler {
         return signature.toLongString();
     }
 
+    private void uncheckedWrite(Writer writer, String s) {
+        try {
+            writer.write(s);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String buildShortStat(String key, Long durationNS) {
+        long callCnt = callCount.getOrDefault(key, 0L);
+        long failCnt = failCount.getOrDefault(key, 0L);
+        return key + ";" + NL
+            + "Total number of calls: " + callCnt + NL
+            + "Total number of errors: " + failCnt + NL
+            + "Total execution time: " + MethodStat.nsToString(durationNS) + NL
+            + "Average running time: " + MethodStat.nsToString(durationNS / callCnt) + NL;
+    }
+
+    private String callSeqNodeToString(MethodStat ms) {
+        String indent = " ".repeat(ms.getDepth());
+        String res = indent + ms.getMainInfo();
+        if (ms.isFailed()) {
+            return res + NL
+                + indent + "  " + "Method failed with message: "
+                + ms.getFailInfo().getMessage() + NL;
+        } else {
+            return res + NL;
+        }
+    }
+
     public static void setPackageName(String name) {
         packageName = name;
     }
@@ -42,8 +73,12 @@ public class CallStackProfiler {
     public void methodCall(Signature signature) {
         Instant inTime = Instant.now();
         String key = signatureKey(signature);
-        callStack.push(new StackNode(key, inTime));
+        callStack.push(new StackNode(key, inTime, callSequence.size()));
         callCount.compute(key, (k, oldCnt) -> oldCnt == null ? 1 : oldCnt + 1);
+        callSequence.add(new MethodStat(
+            signature,
+            callStack.size()
+        ));
     }
 
     public void methodExit(Signature signature) {
@@ -62,11 +97,8 @@ public class CallStackProfiler {
                 return Duration.between(node.startTime, outTime);
             }
         });
-        callSequence.add(new MethodStat(
-            signature,
-            new TimeInterval(node.startTime, outTime),
-            callStack.size())
-        );
+        MethodStat uncompletedStat = callSequence.get(node.seqPos);
+        uncompletedStat.setTimeInterval(new TimeInterval(node.startTime, outTime));
     }
 
     public void methodFailed(Signature signature, Throwable t) {
@@ -91,31 +123,48 @@ public class CallStackProfiler {
 
     public String buildStatistic() {
         StringWriter writer = new StringWriter();
-        printStatistic(writer);
+        try {
+            printStatistic(writer);
+        } catch (IOException ignored) {
+            // Unreachable, string writer does not throw IOException.
+        }
         return writer.toString();
     }
 
-
-    public void printStatistic(Writer writer) {
+    public void printStatistic(Writer writer) throws IOException {
+        writer.write(String.format("%s package statistic:%s", getPackageName(), NL));
+        methodSumDuration.entrySet().stream()
+            .map(e -> Map.entry(e.getKey(), e.getValue().toNanos()))
+            .sorted(Map.Entry.comparingByValue())
+            .forEach(e -> uncheckedWrite(writer, buildShortStat(e.getKey(), e.getValue())));
     }
 
     public String buildCallSequenceView() {
         StringWriter writer = new StringWriter();
-        printCallSequenceView(writer);
+        try {
+            printCallSequenceView(writer);
+        }  catch (IOException ignored) {
+            // Unreachable, string writer does not throw IOException.
+        }
         return writer.toString();
     }
 
-    public void printCallSequenceView(Writer writer) {
-
+    public void printCallSequenceView(Writer writer) throws IOException {
+        writer.write(String.format("%s package statistic:%s", getPackageName(), NL));
+        callSequence.forEach(
+            methodStat -> uncheckedWrite(writer, callSeqNodeToString(methodStat))
+        );
     }
 
     static class StackNode {
         private final String methodKey;
         private final Instant startTime;
+        private final int seqPos;
 
-        public StackNode(String methodKey, Instant startTime) {
+        public StackNode(String methodKey, Instant startTime, int seqPos) {
             this.methodKey = methodKey;
             this.startTime = startTime;
+            this.seqPos = seqPos;
         }
     }
 }

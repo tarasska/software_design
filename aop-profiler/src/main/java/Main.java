@@ -6,5 +6,7 @@ public class Main {
         CallStackProfiler.setPackageName("demo");
         Example e = new Example();
         e.run();
+        System.out.println(CallStackProfiler.INSTANCE.buildStatistic());
+        System.out.println(CallStackProfiler.INSTANCE.buildCallSequenceView());
     }
 }

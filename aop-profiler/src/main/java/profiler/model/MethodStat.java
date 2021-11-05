@@ -2,29 +2,25 @@ package profiler.model;
 
 import org.aspectj.lang.Signature;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
 import java.util.NoSuchElementException;
 
 
 public class MethodStat {
     private final Signature signature;
-    private final TimeInterval timeInterval;
     private final int depth;
 
+    private TimeInterval timeInterval;
     private Throwable failInfo;
 
-    public MethodStat(Signature signature, TimeInterval timeInterval, int depth) {
+    public MethodStat(Signature signature, int depth) {
         this.signature = signature;
-        this.timeInterval = timeInterval;
         this.depth = depth;
         this.failInfo = null;
     }
 
-    private String timeToDateString(Instant instant) {
-        return new SimpleDateFormat("dd MM yyyy HH:mm:ss").format(Date.from(timeInterval.from));
+    public static String nsToString(Long ns) {
+        return String.format("%d:%d", ns / 1_000_000_000, ns % 1_000_000_000);
     }
 
     public Signature getSignature() {
@@ -33,6 +29,10 @@ public class MethodStat {
 
     public TimeInterval getTimeInterval() {
         return timeInterval;
+    }
+
+    public void setTimeInterval(TimeInterval timeInterval) {
+        this.timeInterval = timeInterval;
     }
 
     public int getDepth() {
@@ -55,13 +55,13 @@ public class MethodStat {
     }
 
     public String getMainInfo() {
-        long sec = Duration.between(timeInterval.from, timeInterval.to).toSeconds();
+        long ns = Duration.between(timeInterval.from, timeInterval.to).toNanos();
         return String.format(
             "%s [%s..%s: %s]",
             signature.toLongString(),
-            timeToDateString(timeInterval.from),
-            timeToDateString(timeInterval.to),
-            String.format("%d:%02d:%02d", sec / 3600, (sec % 3600) / 60, (sec % 60))
+            timeInterval.from.toString(),
+            timeInterval.to.toString(),
+            nsToString(ns)
         );
     }
 }
