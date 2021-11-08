@@ -1,11 +1,11 @@
-import demo.Example;
+import demo.ExampleRunner;
 import profiler.CallStackProfiler;
 
 public class Main {
     public static void main(String[] args) {
         CallStackProfiler.setPackageName("demo");
-        Example e = new Example();
-        e.run();
+        ExampleRunner e = new ExampleRunner();
+        e.run(100);
         System.out.println(CallStackProfiler.INSTANCE.buildStatistic());
         System.out.println(CallStackProfiler.INSTANCE.buildCallSequenceView());
     }
