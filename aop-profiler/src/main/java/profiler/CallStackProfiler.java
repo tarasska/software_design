@@ -51,7 +51,7 @@ public class CallStackProfiler {
     }
 
     private String callSeqNodeToString(MethodStat ms) {
-        String indent = " ".repeat(ms.getDepth());
+        String indent = " |".repeat(ms.getDepth());
         String res = indent + ms.getMainInfo();
         if (ms.isFailed()) {
             return res + NL
