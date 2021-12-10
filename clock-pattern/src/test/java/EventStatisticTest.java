@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -156,6 +157,39 @@ public class EventStatisticTest {
 
         assertStatEq(stat.getAllEventStatistic(), Map.of(
             "b", 10.0 / MIN_PER_HOUR
+        ));
+    }
+
+    @Test public void test_parallel() throws InterruptedException {
+        ManualClock clock = new ManualClock(Instant.now());
+        EventStatisticImpl stat = new EventStatisticImpl(clock);
+
+        final int threadCnt = 5;
+        ExecutorService executor = Executors.newFixedThreadPool(threadCnt);
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 1; i <= threadCnt; i++) {
+            final int iter = i;
+            tasks.add(() -> {
+                for (int j = 0; j < iter * 100; j++) {
+                    stat.incEvent("task" + iter);
+                }
+                clock.add(Duration.ofSeconds(1));
+                return null;
+            });
+        }
+        for (Future<Void> future : executor.invokeAll(tasks)) {
+            try {
+                future.get();
+            } catch (ExecutionException e) {
+                Assertions.fail("Unexpected exception" + e.toString());
+            }
+        }
+        assertStatEq(stat.getAllEventStatistic(), Map.of(
+            "task1", 100.0 / MIN_PER_HOUR,
+            "task2", 200.0 / MIN_PER_HOUR,
+            "task3", 300.0 / MIN_PER_HOUR,
+            "task4", 400.0 / MIN_PER_HOUR,
+            "task5", 500.0 / MIN_PER_HOUR
         ));
     }
 }
