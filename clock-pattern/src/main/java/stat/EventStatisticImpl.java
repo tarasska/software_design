@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -57,29 +56,22 @@ public class EventStatisticImpl implements EventStatistic<Double> {
     @Override
     public void incEvent(String name) {
         write(() -> {
-            Instant currentTime = clock.now();
-            eventsQueue.add(new Event(name, currentTime));
+            eventsQueue.add(new Event(name, clock.now()));
             eventCnt.compute(name, (key, oldValue) -> oldValue == null ? 1 : oldValue + 1);
         });
     }
 
     @Override
     public Double getEventStatisticByName(String name) {
-        return read(() -> {
-            Instant currentTime = clock.now();
-            deleteOldEvents(currentTime);
-            return eventCnt.getOrDefault(name, 0) / MIN_PER_HOUR;
-        });
+        deleteOldEvents(clock.now());
+        return read(() -> eventCnt.getOrDefault(name, 0) / MIN_PER_HOUR);
     }
 
     @Override
     public Map<String, Double> getAllEventStatistic() {
-        return read(() -> {
-            Instant currentTime = clock.now();
-            deleteOldEvents(currentTime);
-            return eventCnt.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue() / MIN_PER_HOUR));
-        });
+        deleteOldEvents(clock.now());
+        return read(() -> eventCnt.entrySet().stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue() / MIN_PER_HOUR)));
     }
 
     @Override
