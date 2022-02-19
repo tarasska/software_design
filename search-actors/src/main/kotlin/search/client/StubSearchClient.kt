@@ -1,16 +1,10 @@
 package search.client
 
 import com.beust.klaxon.Klaxon
-import search.SearchEngine
-import search.SearchResult
-import search.SearchResultElement
-import search.buildFailedResult
-import java.net.URI
-import java.net.URLEncoder
+import search.*
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.nio.charset.StandardCharsets
 
 class StubSearchClient(private val engine: SearchEngine) : SearchClient {
 
@@ -19,11 +13,7 @@ class StubSearchClient(private val engine: SearchEngine) : SearchClient {
     private fun buildHttpRequest(request: SearchRequest): HttpRequest {
         return HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create(
-                "http://localhost:8080" +
-                    "/${engine.name}" +
-                    "/${URLEncoder.encode(request.query, StandardCharsets.UTF_8)}"+
-                    "?c=${request.recordsCnt}"))
+            .uri(SearchUtils.createDefaultUri(engine, request))
             .build()
     }
 
