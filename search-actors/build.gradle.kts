@@ -16,7 +16,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
 
+    implementation("org.http4k:http4k-server-jetty:4.10.0.0.0")
     implementation("com.typesafe.akka:akka-actor_3:2.6.18")
+    implementation("org.http4k:http4k-core:4.13.0.0")
     compileOnly("com.beust:klaxon:5.5")
 }
 
