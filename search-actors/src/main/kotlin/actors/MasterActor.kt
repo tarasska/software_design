@@ -10,11 +10,14 @@ import search.client.SearchRequest
 import search.client.StubSearchClient
 import java.time.Duration
 
-class MasterActor: AbstractActor() {
+class MasterActor(
+    private val clients: List<StubSearchClient> = SearchEngine.values().map {
+            engine -> StubSearchClient(engine)
+    }
+): AbstractActor() {
     private class TimeoutMsg
 
     private lateinit var callBack: ActorRef
-    private val clients = SearchEngine.values().map { engine -> StubSearchClient(engine) }
     private val results = mutableListOf<SearchResult>()
 
     private fun setupTimeout() = context.system.scheduler.scheduleOnce(

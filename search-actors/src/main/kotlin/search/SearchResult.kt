@@ -3,8 +3,8 @@ package search
 data class SearchResultElement(val url: String, val title: String)
 
 class SearchResult(
-    private val engine: SearchEngine,
-    private val resultElements: List<SearchResultElement>
+    val engine: SearchEngine,
+    val resultElements: List<SearchResultElement>
 ) {
     fun isFailed(): Boolean {
         return resultElements.isEmpty()
