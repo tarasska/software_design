@@ -6,12 +6,13 @@ import akka.actor.Props
 import akka.japi.pf.ReceiveBuilder
 import search.SearchEngine
 import search.SearchResult
+import search.client.SearchClient
 import search.client.SearchRequest
 import search.client.StubSearchClient
 import java.time.Duration
 
 class MasterActor(
-    private val clients: List<StubSearchClient> = SearchEngine.values().map {
+    private val clients: List<SearchClient> = SearchEngine.values().map {
             engine -> StubSearchClient(engine)
     }
 ): AbstractActor() {
