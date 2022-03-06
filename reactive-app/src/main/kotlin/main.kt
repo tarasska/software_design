@@ -3,6 +3,7 @@ import io.netty.handler.codec.http.HttpResponseStatus
 import io.reactivex.netty.protocol.http.server.HttpServer
 import io.reactivex.netty.protocol.http.server.HttpServerRequest
 import io.reactivex.netty.protocol.http.server.HttpServerResponse
+import org.apache.log4j.BasicConfigurator
 import rx.Observable
 import server.RequestController
 import server.RequestResult
@@ -20,6 +21,7 @@ fun handle(request: HttpServerRequest<ByteBuf>, response: HttpServerResponse<Byt
 }
 
 fun main(args: Array<String>) {
+    BasicConfigurator.configure()
     HttpServer
         .newServer(8080)
         .start { req, resp ->
