@@ -38,7 +38,6 @@ class MasterActor(
     }
 
     private fun mapToChild(request: SearchRequest) {
-        println(request)
         callBack = sender
         clients.forEach { client ->
             context.actorOf(Props.create(ChildActor::class.java, client)).tell(request, self)

@@ -5,18 +5,31 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
+import search.SearchEngine
 import search.SearchResultElement
 import search.SearchUtils
+import java.lang.Thread.sleep
 
 
 class StubServer: SearchHttpServer {
     private val fail = Response(Status.BAD_REQUEST)
     private val defaultRecordsCnt = 5
 
+    private var badEngine: SearchEngine? = null
+
     override fun handler(): HttpHandler = { request: Request -> createResponse(request) }
+
+    public fun setupBadEngine(engine: SearchEngine){
+        this.badEngine = engine
+    }
 
     private fun createResponse(request: Request): Response {
         val (engine, query) = SearchUtils.parseDefaultUriPath(request.uri.path) ?: return fail
+
+        if (badEngine !== null && engine == badEngine!!.name) {
+            sleep(10000L)
+            return fail
+        }
         val recordsCnt = parseRecordsCount(request)
 
         return Response(Status.OK).body(Klaxon().toJsonString(generateRecords(engine, query, recordsCnt)))

@@ -35,7 +35,7 @@ class ActorsTest: ActorsBaseTest() {
                 val master = createMaster(SearchEngine.values().map {
                         engine -> StubSearchClient(engine)
                 })
-                within(Duration.ofSeconds(1)) {
+                within(Duration.ofSeconds(3)) {
                     master.tell(SearchRequest("Blabla", 10), testActor)
                     assertTrue(expectMsgAnyClassOf<List<SearchResult>>(List::class.java).all {
                         it.resultElements.size == 10
