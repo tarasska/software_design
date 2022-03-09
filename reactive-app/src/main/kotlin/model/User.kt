@@ -2,7 +2,7 @@ package model
 
 import org.bson.Document
 
-data class User(val id: Int, val name: String, val currency: Currency) {
+data class User(val id: Int, val name: String, val currency: Currency) : DBEntity {
     companion object {
         fun from(doc: Document): User {
             return User(
@@ -11,5 +11,13 @@ data class User(val id: Int, val name: String, val currency: Currency) {
                 Currency.valueOf(doc.getString("currency"))
             )
         }
+    }
+
+    override fun toDocument(): Document {
+        return Document(mapOf(
+            "id" to id,
+            "name" to name,
+            "currency" to currency.name
+        ))
     }
 }
