@@ -22,7 +22,6 @@
             <groupId>io.reactivex</groupId>
             <artifactId>rxnetty-common</artifactId>
             <version>0.5.3</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
@@ -33,7 +32,6 @@
             <groupId>io.reactivex</groupId>
             <artifactId>rxnetty-tcp</artifactId>
             <version>0.5.3</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -46,6 +44,17 @@
             <version>3.0.1</version>
         </dependency>
 
+        <!-- New dependencies -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>1.7.36</version>
+        </dependency>
     </dependencies>
 
 
