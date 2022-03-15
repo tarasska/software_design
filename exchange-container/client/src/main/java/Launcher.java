@@ -1,4 +1,4 @@
-import db.AccountDao;
+import db.AccountImpl;
 import io.reactivex.netty.protocol.http.server.HttpServer;
 import org.apache.log4j.BasicConfigurator;
 import serever.AbstractController;
@@ -10,7 +10,7 @@ public class Launcher {
 
     public static void main(String[] args) {
 
-        AccountController controller = new AccountController(new AccountDao());
+        AccountController controller = new AccountController(new AccountImpl());
 
         BasicConfigurator.configure();
 

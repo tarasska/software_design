@@ -1,6 +1,6 @@
 package server;
 
-import db.AccountDao;
+import db.AccountImpl;
 import rx.Observable;
 import serever.AbstractController;
 
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class AccountController extends AbstractController {
-    private final AccountDao dao;
+    private final AccountImpl dao;
 
-    public AccountController(AccountDao dao) {
+    public AccountController(AccountImpl dao) {
         this.dao = dao;
     }
 
