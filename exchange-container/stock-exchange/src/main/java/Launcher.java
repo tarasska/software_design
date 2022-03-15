@@ -9,9 +9,9 @@ public class Launcher {
 
 
     public static void main(String[] args) {
-        StockExchangeController controller = new StockExchangeController(new StockExchangeDao());
-
         BasicConfigurator.configure();
+
+        StockExchangeController controller = new StockExchangeController(new StockExchangeDao());
 
         HttpServer.newServer(DEFAULT_PORT).start((request, response) ->
             AbstractController.handle(controller, request, response)

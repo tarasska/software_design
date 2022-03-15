@@ -9,10 +9,9 @@ public class Launcher {
     public static int DEFAULT_PORT = 8081;
 
     public static void main(String[] args) {
+        BasicConfigurator.configure();
 
         AccountController controller = new AccountController(new AccountImpl());
-
-        BasicConfigurator.configure();
 
         HttpServer.newServer(DEFAULT_PORT).start((request, response) ->
             AbstractController.handle(controller, request, response)
