@@ -7,9 +7,8 @@ import rx.Observable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
-public class StockExchangeController {
+public class StockExchangeController extends AbstractController {
 
     private final StockExchangeDao dao;
 
@@ -54,36 +53,7 @@ public class StockExchangeController {
         ));
     }
 
-    private <T> Observable<String> observableToStr(Observable<T> observable) {
-        return observable.map(Objects::toString).onErrorReturn(Throwable::getMessage);
-    }
-
-    private String getCompanyName(Map<String, List<String>> params) {
-        return params.get(Company.COMPANY_KEY).get(0);
-    }
-
-    private int getIntParam(Map<String, List<String>> params, String name) {
-        return Integer.parseInt(params.get(name).get(0));
-    }
-
-    private Observable<String> withCheckedParams(
-        Function<Map<String, List<String>>, Observable<String>> action,
-        Map<String, List<String>> params,
-        String ...paramNames
-    ) {
-        StringBuilder missingParams = new StringBuilder();
-        for (String name : paramNames) {
-            if (!params.containsKey(name)) {
-                missingParams.append(name).append(';');
-            }
-        }
-        if (missingParams.length() > 0) {
-            return Observable.just(String.format("Params %s not found", missingParams.toString()));
-        }
-
-        return action.apply(params);
-    }
-
+    @Override
     public Observable<String> handle(String endpoint, Map<String, List<String>> params) {
         switch (endpoint) {
             case "add_company": return withCheckedParams(
