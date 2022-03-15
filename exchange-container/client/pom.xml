@@ -12,20 +12,60 @@
     <artifactId>client</artifactId>
 
     <dependencies>
+        <!-- Dependencies from hw2 -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-rx</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxnetty-common</artifactId>
+            <version>0.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxnetty-http</artifactId>
+            <version>0.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxnetty-tcp</artifactId>
+            <version>0.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.74.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.reactivex.rxjava3</groupId>
+            <artifactId>rxjava</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-reload4j</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>1.13.0</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-            <scope>test</scope>
+            <groupId>org.example</groupId>
+            <artifactId>stock-exchange</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-
     </dependencies>
 
     <build>
