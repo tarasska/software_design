@@ -4,7 +4,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.rx.client.FindObservable;
 import com.mongodb.rx.client.MongoCollection;
 import com.mongodb.rx.client.Success;
-import model.Company;
+import model.CompanyStockInfo;
 import org.bson.Document;
 import rx.Observable;
 
@@ -14,17 +14,17 @@ public class StockExchangeDao implements StockExchange {
 
     private final MongoCollection<Document> companies = MongoDB.getCompanies();
 
-    private <T extends Document> Observable<Company> mapCompany(FindObservable<T> found) {
-        return found.toObservable().map(Company::fromDocument);
+    private <T extends Document> Observable<CompanyStockInfo> mapCompany(FindObservable<T> found) {
+        return found.toObservable().map(CompanyStockInfo::fromDocument);
     }
 
-    private Observable<Company> findCompany(String company) {
-        return mapCompany(companies.find(Filters.eq(Company.COMPANY_KEY, company))).defaultIfEmpty(null);
+    private Observable<CompanyStockInfo> findCompany(String company) {
+        return mapCompany(companies.find(Filters.eq(CompanyStockInfo.COMPANY_KEY, company))).defaultIfEmpty(null);
     }
 
     private Observable<Success> replaceIfNonNull(
         String companyName,
-        Function<Company, Company> mapper
+        Function<CompanyStockInfo, CompanyStockInfo> mapper
     ) {
         return findCompany(companyName).flatMap(company -> {
             if (company == null) {
@@ -32,11 +32,11 @@ public class StockExchangeDao implements StockExchange {
                     "Provided company %s not exists.", companyName
                 )));
             }
-            Company updatedCompany = mapper.apply(company);
+            CompanyStockInfo updatedCompany = mapper.apply(company);
 
             return companies
                 .replaceOne(
-                    Filters.eq(Company.COMPANY_KEY, companyName),
+                    Filters.eq(CompanyStockInfo.COMPANY_KEY, companyName),
                     updatedCompany.toDocument()
                 )
                 .map(document -> Success.SUCCESS);
@@ -52,7 +52,7 @@ public class StockExchangeDao implements StockExchange {
                    name
                )));
            } else {
-               return companies.insertOne(new Company(name, stocksCount, stocksPrice).toDocument());
+               return companies.insertOne(new CompanyStockInfo(name, stocksCount, stocksPrice).toDocument());
            }
         });
     }
@@ -66,12 +66,12 @@ public class StockExchangeDao implements StockExchange {
     }
 
     @Override
-    public Observable<Company> getCompanies() {
+    public Observable<CompanyStockInfo> getCompanies() {
         return mapCompany(companies.find());
     }
 
     @Override
-    public Observable<Company> getCompany(String company) {
+    public Observable<CompanyStockInfo> getCompany(String company) {
         return findCompany(company);
     }
 

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
-import model.Company;
+import model.CompanyStockInfo;
 import rx.Observable;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public abstract class AbstractController {
     }
 
     protected String getCompanyName(Map<String, List<String>> params) {
-        return params.get(Company.COMPANY_KEY).get(0);
+        return params.get(CompanyStockInfo.COMPANY_KEY).get(0);
     }
 
     protected int getIntParam(Map<String, List<String>> params, String name) {

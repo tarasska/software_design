@@ -1,7 +1,7 @@
 package serever;
 
 import db.StockExchangeDao;
-import model.Company;
+import model.CompanyStockInfo;
 import rx.Observable;
 
 import java.util.List;
@@ -19,15 +19,15 @@ public class StockExchangeController extends AbstractController {
     private Observable<String> addCompany(Map<String, List<String>> params) {
         return observableToStr(dao.addCompany(
             getCompanyName(params),
-            getIntParam(params, Company.STOCK_CNT_KEY),
-            getIntParam(params, Company.STOCK_PRICE_KEY)
+            getIntParam(params, CompanyStockInfo.STOCK_CNT_KEY),
+            getIntParam(params, CompanyStockInfo.STOCK_PRICE_KEY)
         ));
     }
 
     private Observable<String> addStocks(Map<String, List<String>> params) {
         return observableToStr(dao.addStocks(
             getCompanyName(params),
-            getIntParam(params, Company.STOCK_CNT_KEY)
+            getIntParam(params, CompanyStockInfo.STOCK_CNT_KEY)
         ));
     }
 
@@ -42,14 +42,14 @@ public class StockExchangeController extends AbstractController {
     private Observable<String> updateStockPrices(Map<String, List<String>> params) {
         return observableToStr(dao.updateStockPrices(
             getCompanyName(params),
-            getIntParam(params, Company.STOCK_PRICE_KEY)
+            getIntParam(params, CompanyStockInfo.STOCK_PRICE_KEY)
         ));
     }
 
     private Observable<String> buyStocks(Map<String, List<String>> params) {
         return observableToStr(dao.buyStocks(
             getCompanyName(params),
-            getIntParam(params, Company.STOCK_CNT_KEY)
+            getIntParam(params, CompanyStockInfo.STOCK_CNT_KEY)
         ));
     }
 
@@ -59,13 +59,13 @@ public class StockExchangeController extends AbstractController {
             case "add_company": return withCheckedParams(
                 this::addCompany,
                 params,
-                Company.COMPANY_KEY, Company.STOCK_CNT_KEY, Company.STOCK_PRICE_KEY
+                CompanyStockInfo.COMPANY_KEY, CompanyStockInfo.STOCK_CNT_KEY, CompanyStockInfo.STOCK_PRICE_KEY
             );
 
             case "add_stocks": return withCheckedParams(
                 this::addStocks,
                 params,
-                Company.COMPANY_KEY, Company.STOCK_CNT_KEY
+                CompanyStockInfo.COMPANY_KEY, CompanyStockInfo.STOCK_CNT_KEY
             );
 
             case "get_companies": return withCheckedParams(
@@ -76,19 +76,19 @@ public class StockExchangeController extends AbstractController {
             case "get_company": return withCheckedParams(
                 this::getCompany,
                 params,
-                Company.COMPANY_KEY
+                CompanyStockInfo.COMPANY_KEY
             );
 
             case "update_stock_prices": return withCheckedParams(
                 this::updateStockPrices,
                 params,
-                Company.COMPANY_KEY, Company.STOCK_PRICE_KEY
+                CompanyStockInfo.COMPANY_KEY, CompanyStockInfo.STOCK_PRICE_KEY
             );
 
             case "buy_stocks": return withCheckedParams(
                 this::buyStocks,
                 params,
-                Company.COMPANY_KEY, Company.STOCK_CNT_KEY
+                CompanyStockInfo.COMPANY_KEY, CompanyStockInfo.STOCK_CNT_KEY
             );
 
             default: return Observable.just("Unexpected endpoint " + endpoint);
