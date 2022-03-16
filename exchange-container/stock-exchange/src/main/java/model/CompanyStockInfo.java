@@ -43,4 +43,9 @@ public class CompanyStockInfo implements DBEntity {
     public void setStockPrice(int newPrice) {
         this.stockPrice = newPrice;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{Name: %s; Stocks: %d, Price: %d}", name, stockCount, stockPrice);
+    }
 }

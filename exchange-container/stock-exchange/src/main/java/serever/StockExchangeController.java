@@ -32,7 +32,7 @@ public class StockExchangeController extends AbstractController {
     }
 
     private Observable<String> getCompanies(Map<String, List<String>> params) {
-        return dao.getCompanies().map(Objects::toString).reduce("", (c1, c2) -> c1 + ", " + c2);
+        return dao.getCompanies().map(Objects::toString).concatWith(Observable.just(";\n"));
     }
 
     private Observable<String> getCompany(Map<String, List<String>> params) {
