@@ -10,7 +10,9 @@ public class MongoDB {
         = MongoClients.create("mongodb://localhost:27017")
         .getDatabase("client");
 
-    public static MongoCollection<Document> getUsers() {
-        return database.getCollection("users");
+    public static MongoCollection<Document> getUsersEmptyCollection() {
+        MongoCollection<Document> users = database.getCollection("users");
+        users.drop().toBlocking().single();
+        return users;
     }
 }

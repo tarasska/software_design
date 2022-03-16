@@ -4,6 +4,7 @@ import org.bson.Document;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class User implements DBEntity {
     public static final String USER_ID_KEY = "userId";
@@ -21,10 +22,14 @@ public class User implements DBEntity {
     }
 
     public static User fromDocument(Document document) {
+        if (document == null) {
+            return null;
+        }
+        List<Document> companies = document.get(USER_STOCKS_KEY, List.class);
         return new User(
             document.getInteger(USER_ID_KEY),
             document.getInteger(USER_COINS_KEY),
-            document.get(USER_STOCKS_KEY, List.class)
+            companies.stream().map(CompanyStockInfo::fromDocument).collect(Collectors.toList())
         );
     }
 
@@ -32,7 +37,8 @@ public class User implements DBEntity {
     public Document toDocument() {
         return new Document(Map.of(
             USER_ID_KEY, userId,
-            USER_STOCKS_KEY, stocks
+            USER_COINS_KEY, coins,
+            USER_STOCKS_KEY, stocks.stream().map(CompanyStockInfo::toDocument).collect(Collectors.toList())
         ));
     }
 

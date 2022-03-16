@@ -12,20 +12,13 @@ import rx.Observable;
 import java.util.List;
 
 public class AccountImpl implements Account {
-    private final MongoCollection<Document> users = MongoDB.getUsers();
+    private final MongoCollection<Document> users = MongoDB.getUsersEmptyCollection();
 
     private <T extends Document> Observable<User> mapUser(FindObservable<T> found) {
-        return found.toObservable().map(User::fromDocument);
+        return found.toObservable().map(User::fromDocument).defaultIfEmpty(null);
     }
 
     private Observable<User> findUser(int userId) {
-        users.find(Filters.eq(User.USER_ID_KEY, userId)).toObservable().flatMap(user -> {
-            if (user != null) {
-                return Observable.error(new IllegalArgumentException());
-            } else {
-                return users.insertOne(new User(userId, 100, List.of(new CompanyStockInfo("huawei", 100, 100))).toDocument());
-            }
-        });
         return mapUser(users.find(Filters.eq(User.USER_ID_KEY, userId))).defaultIfEmpty(null);
     }
 

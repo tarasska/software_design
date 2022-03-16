@@ -23,7 +23,7 @@ public class AccountController extends AbstractController {
     private Observable<String> stocksByUser(Map<String, List<String>> params) {
         return observableToStr(
             dao.stocksByUser(getIntParam(params, User.USER_ID_KEY))
-        ).reduce("", (c1, c2) -> c1 + ", " + c2);
+        ).concatWith(Observable.just(";\n"));
     }
 
     @Override
