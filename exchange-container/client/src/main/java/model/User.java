@@ -50,6 +50,10 @@ public class User implements DBEntity {
         return coins;
     }
 
+    public void addCoins(int count) {
+        this.coins += count;
+    }
+
     public List<CompanyStockInfo> getStocks() {
         return stocks;
     }

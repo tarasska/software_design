@@ -53,6 +53,14 @@ public class StockExchangeController extends AbstractController {
         ));
     }
 
+    private Observable<String> getStockCount(Map<String, List<String>> params) {
+        return observableToStr(dao.getCompany(getCompanyName(params)).map(CompanyStockInfo::getStockCount));
+    }
+
+    private Observable<String> getStockPrice(Map<String, List<String>> params) {
+        return observableToStr(dao.getCompany(getCompanyName(params)).map(CompanyStockInfo::getStockPrice));
+    }
+
     @Override
     public Observable<String> handle(String endpoint, Map<String, List<String>> params) {
         switch (endpoint) {
@@ -89,6 +97,18 @@ public class StockExchangeController extends AbstractController {
                 this::buyStocks,
                 params,
                 CompanyStockInfo.COMPANY_KEY, CompanyStockInfo.STOCK_CNT_KEY
+            );
+
+            case "get_stock_count": return withCheckedParams(
+                this::getStockCount,
+                params,
+                CompanyStockInfo.COMPANY_KEY
+            );
+
+            case "get_stock_price": return withCheckedParams(
+                this::getStockPrice,
+                params,
+                CompanyStockInfo.COMPANY_KEY
             );
 
             default: return Observable.just("Unexpected endpoint " + endpoint);

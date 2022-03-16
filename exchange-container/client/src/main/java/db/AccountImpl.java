@@ -8,11 +8,18 @@ import model.CompanyStockInfo;
 import model.User;
 import org.bson.Document;
 import rx.Observable;
+import server.stock.Stock;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class AccountImpl implements Account {
     private final MongoCollection<Document> users = MongoDB.getUsersEmptyCollection();
+    private final Stock stock;
+
+    public AccountImpl(Stock stock) {
+        this.stock = stock;
+    }
 
     private <T extends Document> Observable<User> mapUser(FindObservable<T> found) {
         return found.toObservable().map(User::fromDocument).defaultIfEmpty(null);
@@ -20,6 +27,27 @@ public class AccountImpl implements Account {
 
     private Observable<User> findUser(int userId) {
         return mapUser(users.find(Filters.eq(User.USER_ID_KEY, userId))).defaultIfEmpty(null);
+    }
+
+    private Observable<Success> replaceIfNonNull(
+        int userId,
+        Function<User, User> mapper
+    ) {
+        return findUser(userId).flatMap(company -> {
+            if (company == null) {
+                return Observable.error(new IllegalArgumentException(String.format(
+                    "Provided user %d not exists.", userId
+                )));
+            }
+            User updatedCompany = mapper.apply(company);
+
+            return users
+                .replaceOne(
+                    Filters.eq(User.USER_ID_KEY, userId),
+                    updatedCompany.toDocument()
+                )
+                .map(document -> Success.SUCCESS);
+        });
     }
 
     @Override
@@ -31,14 +59,17 @@ public class AccountImpl implements Account {
                     userId
                 )));
             } else {
-                return users.insertOne(new User(userId, 100, List.of(new CompanyStockInfo("huawei", 100, 100))).toDocument());
+                return users.insertOne(new User(userId, 0, List.of()).toDocument());
             }
         });
     }
 
     @Override
     public Observable<Success> addCoins(int userId, int count) {
-        return null;
+        return replaceIfNonNull(userId, user -> {
+            user.addCoins(count);
+            return user;
+        });
     }
 
     @Override
