@@ -39,14 +39,18 @@ public class AccountImpl implements Account {
                     "Provided user %d not exists.", userId
                 )));
             }
-            User updatedCompany = mapper.apply(company);
 
-            return users
-                .replaceOne(
-                    Filters.eq(User.USER_ID_KEY, userId),
-                    updatedCompany.toDocument()
-                )
-                .map(document -> Success.SUCCESS);
+            try {
+                User updatedCompany = mapper.apply(company);
+                return users
+                    .replaceOne(
+                        Filters.eq(User.USER_ID_KEY, userId),
+                        updatedCompany.toDocument()
+                    )
+                    .map(document -> Success.SUCCESS);
+            } catch (Throwable e) {
+                return Observable.error(e);
+            }
         });
     }
 
@@ -74,7 +78,27 @@ public class AccountImpl implements Account {
 
     @Override
     public Observable<Integer> stockAsCoins(int userId) {
-        return null;
+        return findUser(userId).flatMap(user -> {
+            if (user == null) {
+                return Observable.error(new IllegalArgumentException(String.format(
+                    "Unable to find user %s",
+                    userId
+                )));
+            }
+            try {
+                int sum = 0;
+                for (CompanyStockInfo info : user.getStocks()) {
+                    if (info.getStockCount() > 0) {
+                        int price = stock.stockPrice(info.getName());
+                        sum += price * info.getStockCount();
+                    }
+                }
+                return Observable.just(sum);
+            } catch (Throwable t) {
+                Observable.error(t);
+            }
+            return null;
+        });
     }
 
     @Override
@@ -92,11 +116,45 @@ public class AccountImpl implements Account {
 
     @Override
     public Observable<Success> buyStocks(int userId, String companyName, int count) {
-        return null;
+        return replaceIfNonNull(userId, user -> {
+            int availableStockCount = stock.availableStock(companyName);
+            if (availableStockCount < count) {
+                throw new IllegalArgumentException(String.format(
+                    "Only %d shares are available on the exchange, but was requestd %d",
+                    availableStockCount,
+                    count
+                ));
+            }
+            int stockPrice = stock.stockPrice(companyName);
+            if (user.getCoins() < stockPrice * count) {
+                throw new IllegalArgumentException(String.format(
+                    "There is not enough money on the account, you need %d coins, but there are only %d.",
+                    stockPrice * count,
+                    user.getCoins()
+                ));
+            }
+            stock.buyStocks(companyName, count);
+            user.addStocks(companyName, count);
+            return user;
+        });
     }
 
     @Override
     public Observable<Success> sellStocks(int userId, String companyName, int count) {
-        return null;
+        return replaceIfNonNull(userId, user -> {
+            int userStockCount = user.stockCountByName(companyName);
+            if (userStockCount < count) {
+                throw new IllegalArgumentException(String.format(
+                    "Not enough stocks to sell, %d requested, only %d available.",
+                    count,
+                    userStockCount
+                ));
+            }
+            int stockPrice = stock.stockPrice(companyName);
+            stock.sellStocks(companyName, count);
+            user.addCoins(stockPrice * count);
+            user.addStocks(companyName, -count);
+            return user;
+        });
     }
 }

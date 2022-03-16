@@ -54,6 +54,29 @@ public class User implements DBEntity {
         this.coins += count;
     }
 
+    public void addStocks(String companyName, int count) {
+        boolean contains = false;
+        for (CompanyStockInfo companyStockInfo : stocks) {
+            if (companyStockInfo.getName().equals(companyName)) {
+                companyStockInfo.addStocks(count);
+                contains = true;
+                break;
+            }
+        }
+        if (!contains) {
+            stocks.add(new CompanyStockInfo(companyName, count, 0));
+        }
+    }
+
+    public int stockCountByName(String companyName) {
+        for (CompanyStockInfo companyStockInfo : stocks) {
+            if (companyStockInfo.getName().equals(companyName)) {
+                return companyStockInfo.getStockCount();
+            }
+        }
+        return 0;
+    }
+
     public List<CompanyStockInfo> getStocks() {
         return stocks;
     }
