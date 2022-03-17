@@ -22,7 +22,7 @@ public class AccountImpl implements Account {
     }
 
     private <T extends Document> Observable<User> mapUser(FindObservable<T> found) {
-        return found.toObservable().map(User::fromDocument).defaultIfEmpty(null);
+        return found.toObservable().map(User::fromDocument);
     }
 
     private Observable<User> findUser(int userId) {
@@ -33,15 +33,15 @@ public class AccountImpl implements Account {
         int userId,
         Function<User, User> mapper
     ) {
-        return findUser(userId).flatMap(company -> {
-            if (company == null) {
+        return findUser(userId).flatMap(user -> {
+            if (user == null) {
                 return Observable.error(new IllegalArgumentException(String.format(
                     "Provided user %d not exists.", userId
                 )));
             }
 
             try {
-                User updatedCompany = mapper.apply(company);
+                User updatedCompany = mapper.apply(user);
                 return users
                     .replaceOne(
                         Filters.eq(User.USER_ID_KEY, userId),

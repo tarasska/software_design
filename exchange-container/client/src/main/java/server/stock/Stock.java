@@ -42,7 +42,7 @@ public class Stock implements StockApi {
                 .build();
             return httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body().trim();
         } catch (URISyntaxException | InterruptedException | IOException e) {
-            throw new IllegalStateException("Request failed unexpectedly.", e);
+            throw new IllegalStateException("Request failed unexpectedly." + e.getMessage(), e);
         }
     }
 
