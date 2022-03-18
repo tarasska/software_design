@@ -67,7 +67,7 @@ public class AccountTest {
     }
 
     @Test
-    public void sellOk() {
+    public void sellOkTest() {
         executeObservablesAsSequence(
             account.addUser(0),
             account.addCoins(0, 100),
@@ -78,6 +78,22 @@ public class AccountTest {
             .toBlocking()
             .single()
         ).isEqualTo(Success.SUCCESS);
+    }
+
+    @Test
+    public void sellFailTest() {
+        executeObservablesAsSequence(
+            account.addUser(0),
+            account.addCoins(0, 100),
+            account.buyStocks(0, dell.getName(), 5)
+        );
+        assertThat(account
+            .sellStocks(0, huawei.getName(), 3)
+            .map(Objects::toString)
+            .onErrorReturn(Throwable::getMessage)
+            .toBlocking()
+            .single()
+        ).isEqualTo("Not enough stocks to sell, 3 requested, only 0 available.");
     }
 
     @Test
@@ -92,6 +108,33 @@ public class AccountTest {
             .toBlocking()
             .single()
         ).isEqualTo(5 * dell.getStockPrice());
+    }
+
+    @Test
+    public void allCoinsAfterUpdateTest() throws Exception {
+        executeObservablesAsSequence(
+            account.addUser(0),
+            account.addCoins(0, 100),
+            account.buyStocks(0, dell.getName(), 5)
+        );
+
+        final int scaleFactor = 2;
+        HttpRequest httpRequest = HttpRequest
+            .newBuilder()
+            .uri(new URI(testAddress.concat(String.format(
+                "update_stock_prices?company=%s&stockPrice=%d",
+                dell.getName(),
+                dell.getStockPrice() * scaleFactor
+            ))))
+            .GET()
+            .build();
+        HttpClient.newHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        assertThat(account
+            .stockAsCoins(0)
+            .toBlocking()
+            .single()
+        ).isEqualTo(5 * dell.getStockPrice() * scaleFactor);
     }
 
     private void executeObservablesAsSequence(Observable<?> ...observables) {
