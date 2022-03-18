@@ -4,8 +4,8 @@ import org.bson.Document
 import java.time.LocalDateTime
 
 class SubscriptionEvent(
-    id: Int,
-    userId: Int,
+    id: Long,
+    userId: Long,
     creationTime: LocalDateTime,
     val type: SubscriptionType,
     val endTime: LocalDateTime
@@ -16,8 +16,8 @@ class SubscriptionEvent(
     }
 
     constructor(doc: Document) : this(
-        doc.getInteger(DbConstants.ID_KEY),
-        doc.getInteger(DbConstants.USER_ID_KEY),
+        doc.getLong(DbConstants.ID_KEY),
+        doc.getLong(DbConstants.USER_ID_KEY),
         LocalDateTime.parse(doc.getString(DbConstants.TIMESTAMP_KEY), DbFormatter.standard),
         SubscriptionType.valueOf(doc.getString(DbConstants.EVENT_TYPE_KEY)),
         LocalDateTime.parse(doc.getString(DbConstants.END_TIME), DbFormatter.standard)

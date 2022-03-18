@@ -7,8 +7,8 @@ import org.bson.Document
 import java.time.LocalDateTime
 
 open class Event (
-    val id: Int,
-    val userId: Int,
+    val id: Long,
+    val userId: Long,
     val creationTime: LocalDateTime
 ): DbModel, Comparable<Event> {
     override fun toDocument(): Document = Document()

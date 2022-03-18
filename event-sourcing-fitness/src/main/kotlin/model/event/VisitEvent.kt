@@ -6,8 +6,8 @@ import org.bson.Document
 import java.time.LocalDateTime
 
 class VisitEvent(
-    id: Int,
-    userId: Int,
+    id: Long,
+    userId: Long,
     creationTime: LocalDateTime,
     val type: VisitType
 ): Event(id, userId, creationTime) {
@@ -17,8 +17,8 @@ class VisitEvent(
     }
 
     constructor(doc: Document) : this(
-        doc.getInteger(ID_KEY),
-        doc.getInteger(USER_ID_KEY),
+        doc.getLong(ID_KEY),
+        doc.getLong(USER_ID_KEY),
         LocalDateTime.parse(doc.getString(DbConstants.TIMESTAMP_KEY), DbFormatter.standard),
         VisitType.valueOf(doc.getString(DbConstants.EVENT_TYPE_KEY))
     )
