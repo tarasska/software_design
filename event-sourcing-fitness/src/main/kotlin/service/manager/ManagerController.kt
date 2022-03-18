@@ -1,7 +1,6 @@
 package service.manager
 
 import db.FitnessCenterDao
-import model.command.SubscriptionCommand
 import model.event.DbConstants
 import rx.Observable
 import service.AbstractController

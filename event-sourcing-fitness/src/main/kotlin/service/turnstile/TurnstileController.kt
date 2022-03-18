@@ -1,7 +1,6 @@
 package service.turnstile
 
 import db.FitnessCenterDao
-import model.command.VisitCommand
 import model.event.DbConstants
 import rx.Observable
 import service.AbstractController

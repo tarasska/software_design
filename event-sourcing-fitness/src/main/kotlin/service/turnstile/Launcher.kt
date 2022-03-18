@@ -1,7 +1,8 @@
 package service.turnstile
 
+import db.FitnessCenterDao
 import service.ServerLauncher
 
 fun main(args: Array<String>) {
-    ServerLauncher(TurnstileController(), 8082)
+    ServerLauncher(TurnstileController(FitnessCenterDao()), 8082)
 }

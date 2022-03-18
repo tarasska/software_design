@@ -1,4 +1,4 @@
-package model.command
+package service.turnstile
 
 import com.mongodb.rx.client.Success
 import db.FitnessCenterDao

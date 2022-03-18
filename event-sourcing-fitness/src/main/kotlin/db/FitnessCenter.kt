@@ -12,6 +12,8 @@ interface FitnessCenter {
     fun getVisitsByUserId(userId: Long): Observable<VisitEvent>
     fun getLastVisitEvent(userId: Long): Observable<VisitEvent>
 
+    fun getAllVisits(): Observable<VisitEvent>
+
     fun addSubscription(
         userId: Long,
         creationTime: LocalDateTime,

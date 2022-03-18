@@ -47,6 +47,10 @@ class FitnessCenterDao(
         return getVisitsByUserId(userId).lastOrDefault(null)
     }
 
+    override fun getAllVisits(): Observable<VisitEvent> {
+        return visits.find().toObservable().map { doc -> VisitEvent(doc) }.sorted()
+    }
+
     override fun addSubscription(
         userId: Long,
         creationTime: LocalDateTime,
