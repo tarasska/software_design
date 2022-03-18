@@ -12,7 +12,8 @@ object DbConstants {
 }
 
 object DbFormatter {
-    val standard = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val standard: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val short: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-mm")
 }
 
 interface DbModel {

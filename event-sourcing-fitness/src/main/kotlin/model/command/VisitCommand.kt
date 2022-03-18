@@ -24,7 +24,7 @@ class VisitCommand(private val fitnessCenterDao: FitnessCenterDao) {
     }
 
     private fun checkSubscription(userId: Long, now: LocalDateTime): Observable<Success> {
-        return fitnessCenterDao.getActualSubscriptionByUserId(userId)
+        return fitnessCenterDao.getLastSubscriptionByUserId(userId)
             .flatMap {
                 if (it.endTime.isBefore(now)) {
                     checkDoubleEnter(userId, now)

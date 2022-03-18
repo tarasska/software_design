@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 interface FitnessCenter {
     fun getSubscriptionsByUserId(userId: Long): Observable<SubscriptionEvent>
-    fun getActualSubscriptionByUserId(userId: Long): Observable<SubscriptionEvent>
+    fun getLastSubscriptionByUserId(userId: Long): Observable<SubscriptionEvent>
     fun getVisitsByUserId(userId: Long): Observable<VisitEvent>
     fun getLastVisitEvent(userId: Long): Observable<VisitEvent>
 

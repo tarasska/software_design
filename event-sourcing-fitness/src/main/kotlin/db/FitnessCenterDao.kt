@@ -1,41 +1,50 @@
 package db
 
 import com.mongodb.client.model.Filters
+import com.mongodb.rx.client.MongoCollection
 import com.mongodb.rx.client.Success
 import model.event.DbConstants
 import model.event.SubscriptionEvent
 import model.event.VisitEvent
+import org.bson.Document
 import rx.Observable
 import java.time.LocalDateTime
 
-class FitnessCenterDao : FitnessCenter {
-    private val subscriptions = MongoDB.getSubscriptions()
-    private val visits = MongoDB.getVisits()
+class FitnessCenterDao(
+    private val subscriptions: MongoCollection<Document> = MongoDB.getSubscriptions(),
+    private val visits: MongoCollection<Document> = MongoDB.getVisits()
+) : FitnessCenter {
 
-    private fun subByUserId(userId: Long): Observable<SubscriptionEvent> {
+    private fun subsByUserId(userId: Long): Observable<SubscriptionEvent> {
         return subscriptions
             .find(Filters.eq(DbConstants.USER_ID_KEY, userId))
             .toObservable()
             .map { doc -> SubscriptionEvent(doc) }
+            .defaultIfEmpty(null)
     }
 
-    private fun visitByUserId(userId: Long): Observable<VisitEvent> {
+    private fun visitsByUserId(userId: Long): Observable<VisitEvent> {
         return visits
             .find(Filters.eq(DbConstants.USER_ID_KEY, userId))
             .toObservable()
             .map { doc -> VisitEvent(doc) }
+            .defaultIfEmpty(null)
     }
 
     override fun getSubscriptionsByUserId(userId: Long): Observable<SubscriptionEvent> {
-        return subByUserId(userId).sorted()
+        return subsByUserId(userId).sorted()
     }
 
-    override fun getActualSubscriptionByUserId(userId: Long): Observable<SubscriptionEvent> {
-        return getSubscriptionsByUserId(userId).last()
+    override fun getLastSubscriptionByUserId(userId: Long): Observable<SubscriptionEvent> {
+        return getSubscriptionsByUserId(userId).lastOrDefault(null)
     }
 
     override fun getVisitsByUserId(userId: Long): Observable<VisitEvent> {
-        return visitByUserId(userId).sorted()
+        return visitsByUserId(userId).sorted()
+    }
+
+    override fun getLastVisitEvent(userId: Long): Observable<VisitEvent> {
+        return getVisitsByUserId(userId).lastOrDefault(null)
     }
 
     override fun addSubscription(
