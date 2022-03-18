@@ -1,7 +1,6 @@
-package event
+package model.event
 
 import org.bson.Document
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object DbConstants {

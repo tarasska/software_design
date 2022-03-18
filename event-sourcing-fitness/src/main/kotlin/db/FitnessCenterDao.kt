@@ -2,9 +2,9 @@ package db
 
 import com.mongodb.client.model.Filters
 import com.mongodb.rx.client.Success
-import event.DbConstants
-import event.SubscriptionEvent
-import event.VisitEvent
+import model.event.DbConstants
+import model.event.SubscriptionEvent
+import model.event.VisitEvent
 import rx.Observable
 
 class FitnessCenterDao : FitnessCenter {

@@ -1,8 +1,8 @@
-package event
+package model.event
 
-import event.DbConstants.ID_KEY
-import event.DbConstants.TIMESTAMP_KEY
-import event.DbConstants.USER_ID_KEY
+import model.event.DbConstants.ID_KEY
+import model.event.DbConstants.TIMESTAMP_KEY
+import model.event.DbConstants.USER_ID_KEY
 import org.bson.Document
 import java.time.LocalDateTime
 

@@ -1,4 +1,4 @@
-package event
+package model.event
 
 import org.bson.Document
 import java.time.LocalDateTime

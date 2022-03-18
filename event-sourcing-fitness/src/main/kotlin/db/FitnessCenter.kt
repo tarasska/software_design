@@ -1,8 +1,8 @@
 package db
 
 import com.mongodb.rx.client.Success
-import event.SubscriptionEvent
-import event.VisitEvent
+import model.event.SubscriptionEvent
+import model.event.VisitEvent
 import rx.Observable
 
 interface FitnessCenter {
