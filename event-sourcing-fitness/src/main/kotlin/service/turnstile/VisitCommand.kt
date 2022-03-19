@@ -12,9 +12,8 @@ class VisitCommand(private val fitnessCenterDao: FitnessCenterDao) {
     private fun checkDoubleEnter(userId: Long, now: LocalDateTime): Observable<Success> {
         return fitnessCenterDao.getLastVisitEvent(userId)
             .flatMap { visit ->
-                if (visit.type == VisitEvent.VisitType.EXIT) {
+                if (visit === null || visit.type == VisitEvent.VisitType.EXIT) {
                     fitnessCenterDao.registerVisit(userId, now, VisitEvent.VisitType.ENTER)
-                    Observable.just(Success.SUCCESS)
                 } else {
                     Observable.error(IllegalStateException(
                         "You have already used your card to enter."
@@ -26,7 +25,7 @@ class VisitCommand(private val fitnessCenterDao: FitnessCenterDao) {
     private fun checkSubscription(userId: Long, now: LocalDateTime): Observable<Success> {
         return fitnessCenterDao.getLastSubscriptionByUserId(userId)
             .flatMap {
-                if (it.endTime.isBefore(now)) {
+                if (it !== null && it.endTime.isAfter(now)) {
                     checkDoubleEnter(userId, now)
                 } else {
                     Observable.error(IllegalStateException(
@@ -44,7 +43,7 @@ class VisitCommand(private val fitnessCenterDao: FitnessCenterDao) {
     fun doExit(userId: Long): Observable<Success> {
         return fitnessCenterDao.getLastVisitEvent(userId)
             .flatMap {
-                if (it.type == VisitEvent.VisitType.ENTER) {
+                if (it?.type == VisitEvent.VisitType.ENTER) {
                     Observable.just(Success.SUCCESS)
                 } else {
                     Observable.error(IllegalStateException(
