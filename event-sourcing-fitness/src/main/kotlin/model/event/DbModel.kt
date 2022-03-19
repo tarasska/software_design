@@ -13,7 +13,7 @@ object DbConstants {
 
 object DbFormatter {
     val standard: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    val short: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-mm")
+    val short: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm")
     val date: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 }
 

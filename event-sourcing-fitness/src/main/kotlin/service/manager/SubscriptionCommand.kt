@@ -33,7 +33,7 @@ class SubscriptionCommand(private val dao: FitnessCenterDao) {
             .flatMap {
                 if (it === null || it.endTime.isBefore(now)) {
                     Observable.error(IllegalStateException("You can't renew an inactive subscription."))
-                } else if (it.endTime.isBefore(endTime)) {
+                } else if (it.endTime.isAfter(endTime)) {
                     Observable.error(IllegalStateException("You can't cut subscription time."))
                 } else {
                     dao.addSubscription(userId, now, SubscriptionType.CREATED, endTime)
