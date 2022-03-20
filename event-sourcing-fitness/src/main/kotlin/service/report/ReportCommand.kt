@@ -12,15 +12,15 @@ import java.time.LocalDateTime
 
 class ReportCommand(private val dao: FitnessCenterDao) {
     data class Visit(val from: LocalDateTime, val to: LocalDateTime) {
-        val visitDuration = Duration.between(from, to)
+        val visitDuration: Duration = Duration.between(from, to)
     }
 
     private val stats: MutableMap<Long, MutableList<Visit>> = mutableMapOf()
 
-    private fun visitsToStat(visitGroup: GroupedObservable<Long, VisitEvent>): MutableList<Visit>  {
+    private fun visitsToStat(visitGroup: Map.Entry<Long, List<VisitEvent>>): MutableList<Visit>  {
         val visits: MutableList<Visit> = ArrayList()
         var last: VisitEvent? = null
-        visitGroup.forEach { event ->
+        visitGroup.value.forEach { event ->
             if (last?.type == VisitEvent.VisitType.ENTER) {
                 visits.add(Visit(last!!.creationTime, event.creationTime))
             }
@@ -30,7 +30,7 @@ class ReportCommand(private val dao: FitnessCenterDao) {
     }
 
     fun withPrebuild(): ReportCommand {
-        dao.getAllVisits().groupBy { it.userId }.forEach { visitGroup ->
+        dao.getAllVisits().toBlocking().toIterable().groupBy { it.userId }.forEach { visitGroup ->
             stats[visitGroup.key] = visitsToStat(visitGroup)
         }
         return this
@@ -45,6 +45,8 @@ class ReportCommand(private val dao: FitnessCenterDao) {
         }
         var last: VisitEvent? = null
         dao.getVisitsByUserId(userId)
+            .toBlocking()
+            .toIterable()
             .filter { event ->
                 maxTimeInStat.isBefore(event.creationTime) || maxTimeInStat.isEqual(event.creationTime)
             }

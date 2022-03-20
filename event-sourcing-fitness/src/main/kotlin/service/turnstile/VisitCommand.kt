@@ -35,16 +35,15 @@ class VisitCommand(private val fitnessCenterDao: FitnessCenterDao) {
             }
     }
 
-    fun doEnter(userId: Long) : Observable<Success> {
-        val now = LocalDateTime.now()
+    fun doEnter(userId: Long, now: LocalDateTime = LocalDateTime.now()) : Observable<Success> {
         return checkSubscription(userId, now)
     }
 
-    fun doExit(userId: Long): Observable<Success> {
+    fun doExit(userId: Long, now: LocalDateTime = LocalDateTime.now()): Observable<Success> {
         return fitnessCenterDao.getLastVisitEvent(userId)
             .flatMap {
                 if (it?.type == VisitEvent.VisitType.ENTER) {
-                    Observable.just(Success.SUCCESS)
+                    fitnessCenterDao.registerVisit(userId, now, VisitEvent.VisitType.EXIT)
                 } else {
                     Observable.error(IllegalStateException(
                         "You should enter before exit."
